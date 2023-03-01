@@ -41,7 +41,7 @@ t_dly   = 1.8*ms            # delay for changes in post-synaptic neuron
 
 #                           # adjusted arbitrarily
 w_syn   = .275 * mV         # weight per synapse (note: modulated by exponential decay)
-r_poi   = 150*Hz            # rate of the Poisson input
+r_poi   = 150*Hz            # default rate of the Poisson input
 w_poi   = w_syn*250         # strength of Poisson
 
 ###################
@@ -55,7 +55,8 @@ rfc                             : second
 eq_th   = 'v > v_th'        # condition for spike
 eq_rst  = 'v = v_rst; w = 0; x = 0 * mV' # rules when spike 
 
-# network creation
+#######################
+# brian2 model setup
 def poi(neu, exc, rate=r_poi):
     '''Create PoissonInput for neurons.
 
@@ -112,7 +113,7 @@ def create_model(path_comp, path_con):
     '''
 
     # load neuron connectivity dataframes
-    df_comp = pd.read_csv(path_comp, index_col = 0)
+    df_comp = pd.read_csv(path_comp, index_col=0)
     df_con = pd.read_parquet(path_con)
 
     neu = NeuronGroup( # create neurons
@@ -144,6 +145,7 @@ def create_model(path_comp, path_con):
 
     return neu, syn, spk_mon
 
+#####################
 # running simulations
 def get_spk_trn(spk_mon):
     '''Extracts spike times from 'spk_mon'
@@ -207,7 +209,7 @@ def construct_dataframe(res, exp_name, exc, i2flyid):
 
     return df
 
-def run_trial_coac(exc, path_comp, path_con):
+def run_trial_coac(exc, path_comp, path_con, r_poi):
     '''Run single trial of coactivation experiment
 
     During the coactivation experiment, the neurons in 'exc' are
@@ -246,7 +248,7 @@ def run_trial_coac(exc, path_comp, path_con):
     return spk_trn
 
 
-def run_trial_dly(exc_tup, path_comp, path_con):
+def run_trial_dly(exc_tup, path_comp, path_con, r_poi):
     '''Run single trial of delayed activation experiment
 
     During the delayed activation experiment, groups of neurons
@@ -274,7 +276,6 @@ def run_trial_dly(exc_tup, path_comp, path_con):
         Mapping between brian neuron IDs and spike times
     '''
 
-
     # get default network
     neu, syn, spk_mon = create_model(path_comp, path_con)
     net = Network(neu, syn, spk_mon)
@@ -293,7 +294,7 @@ def run_trial_dly(exc_tup, path_comp, path_con):
     return spk_trn
 
 
-def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_con, n_proc=-1):
+def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_con, r_poi=r_poi, n_proc=-1):
     '''
     Run default network experiment with PoissonInputs as external input.
     Neurons chosen as Poisson sources spike with a default rate of 150 Hz
@@ -324,6 +325,8 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             path to "completeness materialization" dataframe
         path_con: str
             path to "connectivity" dataframe
+        r_poi : brian2.Hz
+            Rate of the Poisson input (default hardcoded at the top of this file)
         n_proc: int
             number of cores to be used for parallel runs
             default: -1 (use all available cores)
@@ -334,7 +337,7 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
     path_res, path_comp, path_con = [ Path(i) for i in [path_res, path_comp, path_con] ]
 
     # load name/id mappings
-    _, _, i2flyid, name2i, _, name_flyid2i = useful_mappings(name2flyid, path_comp)
+    _, _, i2flyid, _, _, name_flyid2i = useful_mappings(name2flyid, path_comp)
     
     # define output files
     out_pkl = path_res / '{}_{}.pickle'.format(exp_type, exp_name)
@@ -353,14 +356,14 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             exc = [ name_flyid2i[n] for n in exc_name ]
             res = Parallel()(
                 delayed(
-                    run_trial_coac)(exc, path_comp, path_con) for _ in range(n_run))
+                    run_trial_coac)(exc, path_comp, path_con, r_poi) for _ in range(n_run))
         elif exp_type == 'dly':
             for i, e in enumerate(exc_name):
                 print('    Exited neurons: {}: {}'.format(i, ' '.join(e)))
             exc = tuple( [ name_flyid2i[n] for n in o ]  for o in exc_name )
             res = Parallel()(
                 delayed(
-                    run_trial_dly)(exc, path_comp, path_con) for _ in range(n_run))
+                    run_trial_dly)(exc, path_comp, path_con, r_poi) for _ in range(n_run))
         else:
             raise NameError('Unknown exp_type: {}'.format(exp_type))
         
