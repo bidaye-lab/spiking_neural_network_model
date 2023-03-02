@@ -96,7 +96,28 @@ def poi(neu, exc, params):
         
     return pois, neu
 
-def create_model(path_comp, path_con, params):
+# def silence(slnc, syn):
+#     '''Silence neuron by setting weights of all synapses from it to 0
+
+#     Parameters
+#     ----------
+#     slnc : list
+#         List of neuron indices to silence
+#     syn : brian2.Synapses
+#         Defined synapses object
+
+#     Returns
+#     -------
+#     syn : brian2.Synapses
+#         Synapses with modified weights
+#     '''
+
+#     for i in slnc:
+#         syn.w[i, :] = 0*mV
+    
+#     return syn
+
+def create_model(path_comp, path_con, params, slnc=[]):
     '''Create default network model.
 
     Convert the "completeness materialization" and "connectivity" dataframes
@@ -147,8 +168,13 @@ def create_model(path_comp, path_con, params):
     i_post = df_con.loc[:, 'Postsynaptic_Index'].values
     syn.connect(i=i_pre, j=i_post)
 
+    # silence
+    df_con.reset_index(inplace=True)
+    idx_syn_slnc = df_con.index[df_con.loc[:, 'Presynaptic_Index'].isin(slnc)]
+    df_con.loc[idx_syn_slnc,'Excitatory x Connectivity'] = 0
+
     # define connection weight
-    syn.w = df_con.loc[:,"Excitatory x Connectivity"].values * params['w_syn']
+    syn.w = df_con.loc[:,'Excitatory x Connectivity'].values * params['w_syn']
 
     # object to record spikes
     spk_mon = SpikeMonitor(neu) 
@@ -308,7 +334,50 @@ def run_trial_dly(exc_tup, path_comp, path_con, params):
     return spk_trn
 
 
-def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_con, params=default_params, n_proc=-1):
+def run_trial_slnc(exc, slnc, path_comp, path_con, params):
+    '''Run single trial of coactivation experiment
+
+    During the coactivation experiment, the neurons in 'exc' are
+    Poisson inputs. The simulation runs for 't_run'.
+    
+
+    Parameters
+    ----------
+    exc: list
+        contains indices of neurons for PoissonInput
+    slnc: list
+        contains indices of neurons to silence
+    path_comp: Path 
+        path to "completeness materialization" dataframe
+    path_con: Path
+        path to "connectivity" dataframe
+    params : dict
+        Constants and equations that are used to construct the brian2 network model
+
+    Returns
+    -------
+    spk_trn : dict
+        Mapping between brian neuron IDs and spike times
+    '''
+
+
+    # get default network
+    neu, syn, spk_mon = create_model(path_comp, path_con, params, slnc=slnc)
+    # define Poisson input for excitation
+    poi_inp, neu = poi(neu, exc, params)
+    # collect in Network object
+    net = Network(neu, syn, spk_mon, *poi_inp)
+
+    # run simulation
+    net.run(duration=params['t_run'])
+
+    # spike times 
+    spk_trn = get_spk_trn(spk_mon)
+
+    return spk_trn
+
+
+def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_con, params=default_params, slnc_name=[], n_proc=-1):
     '''
     Run default network experiment with PoissonInputs as external input.
     Neurons chosen as Poisson sources spike with a default rate of 150 Hz
@@ -322,6 +391,7 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             two lists: the first is active from the start of the simulation,
             the second is activated after 1 s. The experiments consists of 
             30 trials of 1 s + 1 s each. 
+        slnc: Same as 'coac', but additionally silence neurons defines in 'slnc_name'
 
     Parameters
     ----------
@@ -381,7 +451,16 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             res = Parallel()(
                 delayed(
                     run_trial_dly)(exc, path_comp, path_con, params) for _ in range(n_run))
-            
+        
+        elif exp_type == 'slnc':
+            print('    Exited neurons: {}'.format(' '.join(exc_name)))
+            print('    Silenced neurons: {}'.format(' '.join(slnc_name)))
+            exc = [ name_flyid2i[n] for n in exc_name ]
+            slnc = [ name_flyid2i[n] for n in slnc_name ]
+            res = Parallel()(
+                delayed(
+                    run_trial_slnc)(exc, slnc, path_comp, path_con, params) for _ in range(n_run))
+             
         else:
             raise NameError('Unknown exp_type: {}'.format(exp_type))
         
