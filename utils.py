@@ -1,7 +1,6 @@
 import pandas as pd
 import numpy as np
 
-from pathlib import Path
 import pickle
 
 def load_xls(path_names, sheets_pair, sheets_single):
@@ -26,7 +25,7 @@ def load_xls(path_names, sheets_pair, sheets_single):
     
     # sheets with left/right pairs (name | ID left | ID right)
     dfs_pair = pd.read_excel( 
-        Path(path_names),
+        path_names,
         sheet_name=sheets_pair,
         dtype={'ID_left': str, 'ID_right': str}
         )
@@ -34,7 +33,7 @@ def load_xls(path_names, sheets_pair, sheets_single):
 
     # sheets with single neurons (name | ID)
     dfs_single = pd.read_excel( 
-        Path(path_names),
+        path_names,
         sheet_name=sheets_single,
         dtype={'ID': str}
         )
@@ -113,7 +112,7 @@ def check_ids(name2flyid, path_comp):
     '''
 
     # check if IDs are correct: if everything is correct, nothing is printed
-    df_comp = pd.read_csv(Path(path_comp), index_col=0) # df with all IDs
+    df_comp = pd.read_csv(path_comp, index_col=0) # df with all IDs
     ids_all = df_comp.index # all flywire ids
 
     warn = False
@@ -202,7 +201,7 @@ def useful_mappings(name2flyid, path_comp):
 
     flyid2name = { j: i for i, j in name2flyid.items() } # flywire ID: custom name
 
-    df_comp = pd.read_csv(Path(path_comp), index_col=0) # load completeness dataframe
+    df_comp = pd.read_csv(path_comp, index_col=0) # load completeness dataframe
 
     flyid2i = {j: i for i, j in enumerate(df_comp.index)}  # flywire id: biran ID
     i2flyid = {j: i for i, j in flyid2i.items()} # brian ID: flywire ID
@@ -216,27 +215,22 @@ def useful_mappings(name2flyid, path_comp):
 
 ##########
 # analysis
-def load_exps(path_res):
+def load_exps(l_pkl):
     '''Load simulation results from disk
 
     Parameters
     ----------
-    path_res : str
-        Path to results folder
+    l_pkl : list
+        List of pickle files with simulation results
 
     Returns
     -------
     exps : df
         data for all experiments 'path_res'
     '''
-    # wildcard matching all outputs of 'exp_type'
-    pkl_glob = Path(path_res).glob('*.pickle')
-
-
     # cycle through all experiments
     dfs = []
-    for p in pkl_glob:
-
+    for p in l_pkl:
         # load metadata from pickle
         with open(p, 'rb') as f:
             pkl = pickle.load(f)
