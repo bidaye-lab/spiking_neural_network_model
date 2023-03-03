@@ -376,7 +376,7 @@ def run_trial_slnc(exc, slnc, path_comp, path_con, params):
     return spk_trn
 
 
-def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_con, params=default_params, slnc_name=[], n_proc=-1):
+def run_exp(exp_name, exp_type, neu_exc, path_res, path_comp, path_con, params=default_params, name2flyid=dict(), neu_slnc=[], n_proc=-1):
     '''
     Run default network experiment with PoissonInputs as external input.
     Neurons chosen as Poisson sources spike with a default rate of 150 Hz
@@ -390,7 +390,7 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             two lists: the first is active from the start of the simulation,
             the second is activated after 1 s. The experiments consists of 
             30 trials of 1 s + 1 s each. 
-        slnc: Same as 'coac', but additionally silence neurons defines in 'slnc_name'
+        slnc: Same as 'coac', but additionally silence neurons defines in 'neu_slnc'
 
     Parameters
     ----------
@@ -398,10 +398,8 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             name of the experiment
         exp_type: str
             type of the experiment (coac | dly)
-        exc_name: list or tuple
+        neu_exc: list or tuple
             contains custom names or flywire IDs of neurons to be excited (depending on exc_type, see above)
-        name2flyid : dict
-            Mapping between custom neuron names and flywire IDs
         path_res: str
             path to the output folder where spike data is stored
         path_comp: str 
@@ -410,6 +408,8 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
             path to "connectivity" dataframe
         params : dict
             Constants and equations that are used to construct the brian2 network model
+        name2flyid : dict
+            Mapping between custom neuron names and flywire IDs
         n_proc: int
             number of cores to be used for parallel runs
             default: -1 (use all available cores)
@@ -437,25 +437,25 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
     with parallel_backend('loky', n_jobs=n_proc):
 
         if exp_type == 'coac':
-            print('    Exited neurons: {}'.format(' '.join(exc_name)))
-            exc = [ name_flyid2i[n] for n in exc_name ]
+            print('    Exited neurons: {}'.format(' '.join([str(i) for i in neu_exc])))
+            exc = [ name_flyid2i[n] for n in neu_exc ]
             res = Parallel()(
                 delayed(
                     run_trial_coac)(exc, path_comp, path_con, params) for _ in range(n_run))
             
         elif exp_type == 'dly':
-            for i, e in enumerate(exc_name):
-                print('    Exited neurons: {}: {}'.format(i, ' '.join(e)))
-            exc = tuple( [ name_flyid2i[n] for n in o ]  for o in exc_name )
+            for i, e in enumerate(neu_exc):
+                print('    Exited neurons: {}: {}'.format(i, ' '.join([str(i) for i in e])))
+            exc = tuple( [ name_flyid2i[n] for n in o ]  for o in neu_exc )
             res = Parallel()(
                 delayed(
                     run_trial_dly)(exc, path_comp, path_con, params) for _ in range(n_run))
         
         elif exp_type == 'slnc':
-            print('    Exited neurons: {}'.format(' '.join(exc_name)))
-            print('    Silenced neurons: {}'.format(' '.join(slnc_name)))
-            exc = [ name_flyid2i[n] for n in exc_name ]
-            slnc = [ name_flyid2i[n] for n in slnc_name ]
+            print('    Exited neurons: {}'.format(' '.join([str(i) for i in neu_exc])))
+            print('    Silenced neurons: {}'.format(' '.join([str(i) for i in neu_slnc])))
+            exc = [ name_flyid2i[n] for n in neu_exc ]
+            slnc = [ name_flyid2i[n] for n in neu_slnc ]
             res = Parallel()(
                 delayed(
                     run_trial_slnc)(exc, slnc, path_comp, path_con, params) for _ in range(n_run))
@@ -476,7 +476,7 @@ def run_exp(exp_name, exp_type, exc_name, name2flyid, path_res, path_comp, path_
         'spk_ts':       df,
         'exp_name':     exp_name,
         'exp_type':     exp_type,
-        'exc_name':     exc_name,
+        'neu_exc':     neu_exc,
         'name2flyid':   name2flyid,
         'name_flyid2i': name_flyid2i,
         't_run':        t_run,
