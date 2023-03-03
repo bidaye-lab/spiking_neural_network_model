@@ -96,28 +96,28 @@ def poi(neu, exc, params):
         
     return pois, neu
 
-# def silence(slnc, syn):
-#     '''Silence neuron by setting weights of all synapses from it to 0
+def silence(slnc, syn):
+    '''Silence neuron by setting weights of all synapses from it to 0
 
-#     Parameters
-#     ----------
-#     slnc : list
-#         List of neuron indices to silence
-#     syn : brian2.Synapses
-#         Defined synapses object
+    Parameters
+    ----------
+    slnc : list
+        List of neuron indices to silence
+    syn : brian2.Synapses
+        Defined synapses object
 
-#     Returns
-#     -------
-#     syn : brian2.Synapses
-#         Synapses with modified weights
-#     '''
+    Returns
+    -------
+    syn : brian2.Synapses
+        Synapses with modified weights
+    '''
 
-#     for i in slnc:
-#         syn.w[i, :] = 0*mV
+    for i in slnc:
+        syn.w[' {} == i'.format(i)] = 0*mV
     
-#     return syn
+    return syn
 
-def create_model(path_comp, path_con, params, slnc=[]):
+def create_model(path_comp, path_con, params):
     '''Create default network model.
 
     Convert the "completeness materialization" and "connectivity" dataframes
@@ -130,6 +130,8 @@ def create_model(path_comp, path_con, params, slnc=[]):
         path to "completeness materialization" dataframe
     path_con : str
         path to "connectivity" dataframe
+    params : dict
+        Constants and equations that are used to construct the brian2 network model
 
 
     Returns
@@ -167,11 +169,6 @@ def create_model(path_comp, path_con, params, slnc=[]):
     i_pre = df_con.loc[:, 'Presynaptic_Index'].values
     i_post = df_con.loc[:, 'Postsynaptic_Index'].values
     syn.connect(i=i_pre, j=i_post)
-
-    # silence
-    df_con.reset_index(inplace=True)
-    idx_syn_slnc = df_con.index[df_con.loc[:, 'Presynaptic_Index'].isin(slnc)]
-    df_con.loc[idx_syn_slnc,'Excitatory x Connectivity'] = 0
 
     # define connection weight
     syn.w = df_con.loc[:,'Excitatory x Connectivity'].values * params['w_syn']
@@ -362,9 +359,11 @@ def run_trial_slnc(exc, slnc, path_comp, path_con, params):
 
 
     # get default network
-    neu, syn, spk_mon = create_model(path_comp, path_con, params, slnc=slnc)
+    neu, syn, spk_mon = create_model(path_comp, path_con, params)
     # define Poisson input for excitation
     poi_inp, neu = poi(neu, exc, params)
+    # silence neurons
+    syn = silence(slnc, syn)
     # collect in Network object
     net = Network(neu, syn, spk_mon, *poi_inp)
 
