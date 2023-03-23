@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from utils import useful_mappings
 from textwrap import dedent
 
@@ -57,7 +58,7 @@ default_params = {
 
 #######################
 # brian2 model setup
-def poi(neu, exc, params):
+def stimulate(neu, stim, params):
     '''Create PoissonInput for neurons.
 
     For each neuron in 'names' a PoissonInput is generated and 
@@ -67,7 +68,7 @@ def poi(neu, exc, params):
     ----------
     neu : NeuronGroup
         Defined brian2.NeuronGroup object
-    exc : list
+    stim : list
         Indices of neurons for which to create Poisson input
     rate : Unit, optional
         Frequency for the Poisson spikes, by default 'r_poi'
@@ -76,14 +77,12 @@ def poi(neu, exc, params):
 
     Returns
     -------
-    pois : list
-        PoissonInput objects for each neuron in 'exc'
-    neu : NeuronGroup
-        NeuronGroup with adjusted refractory periods
+    poi_inp : list
+        PoissonInput objects for each neuron in 'stim'
     '''
 
-    pois = []
-    for i in exc:
+    poi_inp = []
+    for i in stim:
         p = PoissonInput(
             target=neu[i], 
             target_var='v', 
@@ -92,9 +91,9 @@ def poi(neu, exc, params):
             weight=params['w_syn']*params['f_poi']
             )
         neu[i].rfc = 0 * ms # no refractory period for Poisson targets
-        pois.append(p)
+        poi_inp.append(p)
         
-    return pois, neu
+    return poi_inp
 
 def silence(slnc, syn):
     '''Silence neuron by setting weights of all synapses from it to 0
@@ -105,17 +104,11 @@ def silence(slnc, syn):
         List of neuron indices to silence
     syn : brian2.Synapses
         Defined synapses object
-
-    Returns
-    -------
-    syn : brian2.Synapses
-        Synapses with modified weights
     '''
 
     for i in slnc:
         syn.w[' {} == i'.format(i)] = 0*mV
     
-    return syn
 
 def create_model(path_comp, path_con, params):
     '''Create default network model.
@@ -202,7 +195,7 @@ def get_spk_trn(spk_mon):
     
     return spk_trn
 
-def construct_dataframe(res, exp_name, exc, i2flyid):
+def get_res_df(res, exp_name, i2flyid):
     '''Take spike time dict and colltect spikes in pandas dataframe
 
     Parameters
@@ -211,8 +204,6 @@ def construct_dataframe(res, exp_name, exc, i2flyid):
         List with spike time dicts for each trial
     exp_name : str
         Name of the experiment
-    exc : list
-        List with indices for excited neurons
     i2flyid : dict
         Mapping between Brian IDs and flywire IDs
 
@@ -237,22 +228,62 @@ def construct_dataframe(res, exp_name, exc, i2flyid):
     }
     df = pd.DataFrame(d)
     df.loc[:, 'flywire_id'] = df.loc[:, 'brian_id'].map(i2flyid)
-    df.loc[:, 'exc'] = df.loc[:, 'brian_id'].map(lambda x: True if x in exc else False)
     df.loc[:, 'exp_name'] = exp_name
 
     return df
 
-def run_trial_coac(exc, path_comp, path_con, params):
-    '''Run single trial of coactivation experiment
 
-    During the coactivation experiment, the neurons in 'exc' are
-    Poisson inputs. The simulation runs for 't_run'.
-    
+
+def get_df_inst(d_inst, t_run, name2i):
+    '''Generate dataframe with instructions for the simulation
 
     Parameters
     ----------
-    exc: list
-        contains indices of neurons for PoissonInput
+    d_inst : dict of dict of lists
+        Outer dict defines `mode`, inner dict maps time points to 
+        list of neuron names
+    t_run : brian2.ms
+        Total time of each run
+    name2i : dict
+        Mapping from neuron names to canonical IDs
+
+    Returns
+    -------
+    df : pd.DataFrame
+        Each row represents an instruction for neuron stimulation, silencing etc
+    '''
+    
+
+    df = pd.DataFrame(data={
+        'mode': ['end'],
+        't': [t_run],
+        'name': [[]]})
+    
+    i = 1
+    for m, d_neu in d_inst.items():
+        for t, l_neu in d_neu.items():
+            df.at[i, 'mode'] = m
+            df.at[i, 't',] = t * ms
+            df.at[i, 'name'] = l_neu
+            i += 1
+
+    df.loc[:, 'id'] = df.loc[:, 'name'].apply(lambda l: [name2i[i] for i in l])
+
+    df = df.sort_values(by='t')
+
+    dt = np.roll(df.loc[:, 't'].diff().values, -1)
+    df.loc[:, 'dt'] = dt
+
+    return df
+
+
+def run_trial(df_inst, path_comp, path_con, params):
+    '''Run single trial of simulation
+
+    Parameters
+    ----------
+    df_inst : pd.DataFrame
+        Instructions for the simulation
     path_comp: Path 
         path to "completeness materialization" dataframe
     path_con: Path
@@ -264,66 +295,28 @@ def run_trial_coac(exc, path_comp, path_con, params):
     -------
     spk_trn : dict
         Mapping between brian neuron IDs and spike times
+
     '''
 
-
-    # get default network
-    neu, syn, spk_mon = create_model(path_comp, path_con, params)
-    # define Poisson input for excitation
-    poi_inp, neu = poi(neu, exc, params)
-    # collect in Network object
-    net = Network(neu, syn, spk_mon, *poi_inp)
-
-    # run simulation
-    net.run(duration=params['t_run'])
-
-    # spike times 
-    spk_trn = get_spk_trn(spk_mon)
-
-    return spk_trn
-
-
-def run_trial_dly(exc_tup, path_comp, path_con, params):
-    '''Run single trial of delayed activation experiment
-
-    During the delayed activation experiment, groups of neurons
-    are made Poisson inputs consecutively during the simulation.
-    Here, 'exc' is a tuple of lists, where each list contains neurons
-    to be added after 't_run'.
-    E.g. if exc=([1, 2], [3]) and t_run=1*s, the simulations runs
-    for 1 s with 1 and 2 as Poisson inputs and for another 1 s
-    with 1, 2, and 3 as Poisson inputs.
-
-    
-    Parameters
-    ----------
-    exc_tup: tuple
-        contains tuple of lists of indices of neurons for PoissonInput
-    path_comp: Path 
-        path to "completeness materialization" dataframe
-    path_con: Path
-        path to "connectivity" dataframe
-    params : dict
-        Constants and equations that are used to construct the brian2 network model
-
-
-    Returns
-    -------
-    spk_trn : dict
-        Mapping between brian neuron IDs and spike times
-    '''
 
     # get default network
     neu, syn, spk_mon = create_model(path_comp, path_con, params)
     net = Network(neu, syn, spk_mon)
 
-    for exc in exc_tup:
-        # add Poisson inputs to network
-        poi_inp, neu = poi(neu, exc, params)
-        net.add(*poi_inp)
+    for i in df_inst.index:
+        mode, ids, dt = df_inst.loc[i, ['mode', 'id', 'dt']]
+        if mode == 'stim':
+            # add Poisson inputs to network
+            poi_inp = stimulate(neu, ids, params)
+            net.add(*poi_inp)
+        elif mode == 'slnc':
+            # silence neurons
+            syn = silence(ids, syn)
+        elif mode == 'end':
+            break
 
         # run simulation
-        net.run(duration=params['t_run'])
+        net.run(duration=dt)
 
     # spike times 
     spk_trn = get_spk_trn(spk_mon)
@@ -331,75 +324,18 @@ def run_trial_dly(exc_tup, path_comp, path_con, params):
     return spk_trn
 
 
-def run_trial_slnc(exc, slnc, path_comp, path_con, params):
-    '''Run single trial of coactivation experiment
-
-    During the coactivation experiment, the neurons in 'exc' are
-    Poisson inputs. The simulation runs for 't_run'.
-    
-
-    Parameters
-    ----------
-    exc: list
-        contains indices of neurons for PoissonInput
-    slnc: list
-        contains indices of neurons to silence
-    path_comp: Path 
-        path to "completeness materialization" dataframe
-    path_con: Path
-        path to "connectivity" dataframe
-    params : dict
-        Constants and equations that are used to construct the brian2 network model
-
-    Returns
-    -------
-    spk_trn : dict
-        Mapping between brian neuron IDs and spike times
-    '''
-
-
-    # get default network
-    neu, syn, spk_mon = create_model(path_comp, path_con, params)
-    # define Poisson input for excitation
-    poi_inp, neu = poi(neu, exc, params)
-    # silence neurons
-    syn = silence(slnc, syn)
-    # collect in Network object
-    net = Network(neu, syn, spk_mon, *poi_inp)
-
-    # run simulation
-    net.run(duration=params['t_run'])
-
-    # spike times 
-    spk_trn = get_spk_trn(spk_mon)
-
-    return spk_trn
-
-
-def run_exp(exp_name, exp_type, neu_exc, path_res, path_comp, path_con, params=default_params, name2flyid=dict(), neu_slnc=[], n_proc=-1):
+def run_exp(exp_name, neu_stim, path_res, path_comp, path_con, params=default_params, name2flyid=dict(), neu_slnc=dict(), n_proc=-1):
     '''
     Run default network experiment with PoissonInputs as external input.
     Neurons chosen as Poisson sources spike with a default rate of 150 Hz
     and have a refractory period of 0 ms.
 
-    Different types of experiments are implemented, which are chosen via 'exp_type'
-        coac: Coactivation of all neurons. Here, 'exc' is a list
-            of neuron names, which are all set as Poisson inputs. The experiment
-            consists of 30 trials of 1 s each.
-        dly: Delayed activation of neurons. Here, 'exc' is a tuple containing 
-            two lists: the first is active from the start of the simulation,
-            the second is activated after 1 s. The experiments consists of 
-            30 trials of 1 s + 1 s each. 
-        slnc: Same as 'coac', but additionally silence neurons defines in 'neu_slnc'
-
     Parameters
     ----------
         exp_name: str
             name of the experiment
-        exp_type: str
-            type of the experiment (coac | dly)
-        neu_exc: list or tuple
-            contains custom names or flywire IDs of neurons to be excited (depending on exc_type, see above)
+        neu_stim: dict
+            contains time points and custom names or flywire IDs of neurons to be stimulated
         path_res: str
             path to the output folder where spike data is stored
         path_comp: str 
@@ -410,77 +346,59 @@ def run_exp(exp_name, exp_type, neu_exc, path_res, path_comp, path_con, params=d
             Constants and equations that are used to construct the brian2 network model
         name2flyid : dict
             Mapping between custom neuron names and flywire IDs
+        neu_slnc: dict
+            contains time points and custom names or flywire IDs of neurons to be silenced
         n_proc: int
             number of cores to be used for parallel runs
             default: -1 (use all available cores)
             n_proc=1 is equivalent serial code
     '''
-
     # convert to Path objects
     path_res, path_comp, path_con = [ Path(i) for i in [path_res, path_comp, path_con] ]
 
+    # define output files
+    out_pkl = path_res / '{}.pickle'.format(exp_name)
+
     # load name/id mappings
     _, _, i2flyid, _, _, name_flyid2i = useful_mappings(name2flyid, path_comp)
-    
-    # define output files
-    out_pkl = path_res / '{}_{}.pickle'.format(exp_type, exp_name)
+
+    # generate instructions
+    df_inst = get_df_inst({'stim': neu_stim, 'slnc': neu_slnc}, t_run=params['t_run'], name2i=name_flyid2i)
 
     # print info
     print('>>> Experiment:     {}'.format(exp_name))
     print('    Output files:   {}'.format(out_pkl))
 
+    print('    Instructions:')
+    for i in df_inst.index:
+        t, n, m = df_inst.loc[i, ['t', 'name', 'mode']]
+        print('{:>12} | {:>5} | {}'.format(t, m, ' '.join([str(j) for j in n])))
+
     # start time for simulation
     start = time() 
 
     # start parallel calculation
-    n_run = params['n_run']
     with parallel_backend('loky', n_jobs=n_proc):
+        res = Parallel()(
+            delayed(
+                run_trial)(df_inst, path_comp, path_con, params) for _ in range(params['n_run']))
 
-        if exp_type == 'coac':
-            print('    Exited neurons: {}'.format(' '.join([str(i) for i in neu_exc])))
-            exc = [ name_flyid2i[n] for n in neu_exc ]
-            res = Parallel()(
-                delayed(
-                    run_trial_coac)(exc, path_comp, path_con, params) for _ in range(n_run))
-            
-        elif exp_type == 'dly':
-            for i, e in enumerate(neu_exc):
-                print('    Exited neurons: {}: {}'.format(i, ' '.join([str(i) for i in e])))
-            exc = tuple( [ name_flyid2i[n] for n in o ]  for o in neu_exc )
-            res = Parallel()(
-                delayed(
-                    run_trial_dly)(exc, path_comp, path_con, params) for _ in range(n_run))
-        
-        elif exp_type == 'slnc':
-            print('    Exited neurons: {}'.format(' '.join([str(i) for i in neu_exc])))
-            print('    Silenced neurons: {}'.format(' '.join([str(i) for i in neu_slnc])))
-            exc = [ name_flyid2i[n] for n in neu_exc ]
-            slnc = [ name_flyid2i[n] for n in neu_slnc ]
-            res = Parallel()(
-                delayed(
-                    run_trial_slnc)(exc, slnc, path_comp, path_con, params) for _ in range(n_run))
-             
-        else:
-            raise NameError('Unknown exp_type: {}'.format(exp_type))
-        
     # print simulation time
     walltime = time() - start 
     print('    Elapsed time:   {} s'.format(int(walltime)))
-    t_run = params['t_run'] if type(exc) == tuple else len(exc) * params['t_run']
 
     # dataframe with spike times
-    df = construct_dataframe(res, exp_name, exc, i2flyid)
+    df_res = get_res_df(res, exp_name, i2flyid)
 
     # store spike data and experiment metadata
     data = {
-        'spk_ts':       df,
+        'spk_ts':       df_res,
         'exp_name':     exp_name,
-        'exp_type':     exp_type,
-        'neu_exc':     neu_exc,
         'name2flyid':   name2flyid,
         'name_flyid2i': name_flyid2i,
-        't_run':        t_run,
-        'n_run':        n_run,
+        'instructions': df_inst,
+        't_run':        params['t_run'],
+        'n_run':        params['n_run'],
         'path_res':     path_res,
         'path_comp':    path_comp,
         'path_con':     path_con,
