@@ -61,24 +61,33 @@ def load_xls(path_names, sheets_pair, sheets_single):
     '''
     
     # sheets with left/right pairs (name | ID left | ID right)
-    dfs_pair = pd.read_excel( 
-        path_names,
-        sheet_name=sheets_pair,
-        dtype={'ID_left': str, 'ID_right': str}
-        )
-    df_pair = pd.concat(dfs_pair, ignore_index=True).dropna(how='all') if dfs_pair else pd.DataFrame(columns=['Name', 'ID'])
+    
+    if sheets_pair:
+        d_pair = pd.read_excel( 
+            path_names,
+            sheet_name=sheets_pair,
+            dtype={'ID_left': str, 'ID_right': str}
+            )
+        df_pair = pd.concat(d_pair, ignore_index=True).dropna(how='all')
+    else:
+        d_pair = dict()
+        df_pair = pd.DataFrame(columns=['Name', 'ID'])
 
     # sheets with single neurons (name | ID)
-    dfs_single = pd.read_excel( 
-        path_names,
-        sheet_name=sheets_single,
-        dtype={'ID': str}
-        )
-    df_single = pd.concat(dfs_single, ignore_index=True).dropna(how='all') if dfs_single else pd.DataFrame(columns=['Name', 'ID'])
+    if sheets_single:
+        d_single = pd.read_excel( 
+            path_names,
+            sheet_name=sheets_single,
+            dtype={'ID': str}
+            )
+        df_single = pd.concat(d_single, ignore_index=True).dropna(how='all')
+    else:
+        d_single = dict()
+        df_single = pd.DataFrame(columns=['Name', 'ID'])
 
     # print info
     print('INFO: Loaded sheets ...')
-    for i in [*dfs_pair.keys(), *dfs_single.keys()]:
+    for i in [*d_pair.keys(), *d_single.keys()]:
         print('      ... {}'.format(i))
     print()
 
