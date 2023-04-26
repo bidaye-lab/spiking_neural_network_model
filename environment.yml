@@ -1,0 +1,16 @@
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - brian2
+  - ipykernel
+  - matplotlib
+  - seaborn
+  - numpy
+  - pandas
+  - scipy
+  - networkx
+  - pyarrow
+  - xlsxwriter
+  - openpyxl
+  - joblib
