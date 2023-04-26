@@ -35,3 +35,10 @@ Many simultaneous and delayed stimalation experiments involving
 walk, stop, and sensory neurons have already been peformed.
 See notebook `\\mpfi.org\public\sb-lab\nico\flywire_brian2\coac_dly_experiments.ipynb`
 and the corresponding `results\coac` and `results\dly` folders.
+
+## Graphs
+The `example.ipynb` shows how to summarize a computational experiment in a single graph.
+This is done in two steps:
+1. The full connectome is loaded in a `DiGraph` object using [NetworkX](https://networkx.org/).
+2. The subset of neurons active in a given experiment is selected from the full graph and written to disk.
+The resulting `*.gexf` file can be loaded for visualization with [Gephi](https://gephi.org/).
