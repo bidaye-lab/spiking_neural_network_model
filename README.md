@@ -3,19 +3,37 @@
 ## Installation
 ### Jupyter notebooks
 The workflow is designed for Jupyter notebooks.
-The easiest way to install Jupyter notebooks is via [anaconda](https://www.anaconda.com/download/).
+In the following, it is assumed that [anaconda](https://www.anaconda.com/download/) is installed on the computer.
+Jupyter notebooks will be installed together with the other python packages below. 
 
 Alternatively, notebooks can be handled with [JupyterLab](https://jupyter.org/) or [Visual Studio Code](https://code.visualstudio.com/docs/datascience/jupyter-notebooks).
 These programs make working with python code significantly more convenient.
 
+## Download code
+To download, click on _Code_ at the top of this web page, download the repository as `.zip` and extract
+
 ### Dependencies
+Install the the following through the _Individual components_ tab in the [Visual Studio Installer](https://visualstudio.microsoft.com/visual-cpp-build-tools/):
+- `MSVC v143 VS2022 C++ x64/x86 built tools` (or latest version)
+- `Windows 10 SDK` (latest version)
+
 The required python packages are collected in `environment.yml`, which can be installed via `conda`.
 Create a new environment by opening an Anaconda terminal, change the working directory to this folder and and call
 
 `conda env create -f environment.yml -n brian2`
 
-### Test installation
-Test the installation by running `example.ipynb`.
+### Run
+In the Anaconda terminal, run `conda activate brian2`.
+Change the working directory to the downloaded folder (`cd` command) and run `jupyterlab` (recommended)
+or `jupyter notebook`.
+Test the installation by opening and running `example.ipynb`.
+Watch the Anaconda terminal for possible warnings related to `brian2`.
+
+## Using multiple CPUs
+The computational load can be distributed over multiple CPU threads.
+To choose the number of threads, set `n_procs` to a number not higher than available on your computer.
+More threads will speed up the computation, but also increase memory usage.
+
 
 ## Custom neuron names
 Custom neuron names used in the lab can be edited in this 
