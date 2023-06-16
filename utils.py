@@ -692,7 +692,8 @@ def get_full_graph(p_comp, p_con):
 
     return G
 
-def write_graph(G, p_prq, name2flyid=dict()):
+
+def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
     '''Select active neurons from G and write subgraph to disk
     File can be visualized with gephi software.
 
@@ -705,11 +706,19 @@ def write_graph(G, p_prq, name2flyid=dict()):
     name2flyid : dict, optional
         Mapping between custom names and flywire IDs, by default dict()
         If supplied, flywire IDs will be converted in the outuput graph
+    neurons : list
+        List of custom names/flywire IDs to include in the graph.
+        Resulting graph will include these neurons instead of all neurons
+        that are active in a `p_prq` experiment.
+        If custom names are supplied, name2flyid need to be passed as well.
+
     '''
-    
+
+
     p_prq = Path(p_prq)
     p_pkl = p_prq.with_suffix('.pickle')
     p_gexf = p_prq.with_suffix('.gexf')
+    p_gexf_cust = p_prq.parent / (p_prq.with_suffix('').name + '_cust.gexf')
 
     # determine duration
     with open(p_pkl, 'rb') as f:
@@ -721,11 +730,20 @@ def write_graph(G, p_prq, name2flyid=dict()):
     df_rate, _ = get_rate(df_spkt, duration=dur)
     ds = df_rate.iloc[:, 0]
 
-    # select subgraph with active neurons
-    G_sub = G.subgraph(ds.index).copy()
+    if neurons:
+        # select subgraph based on custom list
+        ids = [ name2flyid.get(i) for i in neurons ]
+        G_sub = G.subgraph(ids).copy()
+        nx.set_node_attributes(G_sub, 0, 'rate')
+        p_gexf = p_gexf_cust
 
-    # assign rate to size attribute
-    for i in ds.index:
+    else:
+        # select subgraph with active neurons
+        G_sub = G.subgraph(ds.index).copy()
+        ids = ds.index
+
+    # assign rate to
+    for i in ids:
         r = ds.loc[i]
         G_sub.nodes[i]['rate'] = r
 
