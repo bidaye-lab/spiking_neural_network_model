@@ -732,9 +732,9 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
 
     if neurons:
         # select subgraph based on custom list
-        ids = [ name2flyid.get(i) for i in neurons ]
+        ids = [ name2flyid[i] for i in neurons ]
         G_sub = G.subgraph(ids).copy()
-        nx.set_node_attributes(G_sub, 0, 'rate')
+        nx.set_node_attributes(G_sub, 0.0, 'rate')
         p_gexf = p_gexf_cust
 
     else:
@@ -744,8 +744,9 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
 
     # assign rate to
     for i in ids:
-        r = ds.loc[i]
-        G_sub.nodes[i]['rate'] = r
+        if i in ds.index:
+            r = ds.loc[i]
+            G_sub.nodes[i]['rate'] = r
 
     # convert flywire ids to names
     flyid2name = { int(j): i for i, j in name2flyid.items() }
