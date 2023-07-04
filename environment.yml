@@ -6,7 +6,7 @@ dependencies:
   - ipykernel
   - matplotlib
   - seaborn
-  - numpy
+  - numpy=1.24
   - pandas
   - scipy
   - networkx
