@@ -301,6 +301,8 @@ def run_trial(df_inst, path_comp, path_con, params):
             syn = silence(ids, syn)
         elif mode == 'end':
             break
+        else:
+            raise NotImplementedError(f'Cannot interpret instruction {mode}')
 
         # run simulation
         net.run(duration=dt * 1000 * ms)
