@@ -749,7 +749,7 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
 
     # convert flywire ids to names
     flyid2name = { int(j): i for i, j in name2flyid.items() }
-    G_sub = nx.relabel_nodes(G_sub, lambda x: flyid2name.get(x, int(str(x)[9:])))
+    G_sub = nx.relabel_nodes(G_sub, lambda x: flyid2name.get(x, int(str(x).replace('720575940', ''))))
 
     # add attributes to nodes
     nx.set_node_attributes(G_sub, False, name='named')
