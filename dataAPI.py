@@ -71,7 +71,7 @@ def process_neuron_data(traced_df, total_conn_df):
     -------
     None
     """
-
+    
     new_df = total_conn_df.copy()
 
     # Merge new_df with traced_df on bodyId_pre
@@ -100,12 +100,26 @@ def process_neuron_data(traced_df, total_conn_df):
     # Renaming columns and create new ones
     new_df.rename(columns={'bodyId_pre': 'Presynaptic_ID', 'bodyId_post': 'Postsynaptic_ID', 'weight': 'Connectivity', 'weight_modified': 'Excitatory x Connectivity'}, inplace=True)
     new_df['Unnamed'] = new_df.index
-    new_df['Presynaptic_Index'] = new_df.groupby('Presynaptic_ID').cumcount() + 1
-    
-    # Create a reversed DataFrame to correctly calculate Postsynaptic_Index
-    reversed_df = new_df[::-1]
-    reversed_df['Postsynaptic_Index'] = reversed_df.groupby('Postsynaptic_ID').cumcount() + 1
-    new_df['Postsynaptic_Index'] = reversed_df['Postsynaptic_Index'].values[::-1]
+
+    new_df['Presynaptic_ID'] = new_df['Presynaptic_ID'].astype(str)
+    new_df['Postsynaptic_ID'] = new_df['Postsynaptic_ID'].astype(str)
+
+    tempDF = pd.DataFrame()
+    tempDF['TempValues'] = pd.concat([new_df['Presynaptic_ID'], new_df['Postsynaptic_ID']], ignore_index=True)
+    tempDF.drop_duplicates(subset='TempValues', inplace=True)
+    labels, uniques = pd.factorize(tempDF['TempValues'])
+    mapping_dict = dict(zip(uniques, labels))
+
+    new_df['Presynaptic_Index'] = new_df['Presynaptic_ID'].map(mapping_dict)
+    new_df['Postsynaptic_Index'] = new_df['Postsynaptic_ID'].map(mapping_dict)
+
+    # Create a new DataFrame with an empty column name for 'TempValues' and 'Completed' column filled with 'True'
+    export_df = pd.DataFrame()
+    export_df[''] = tempDF['TempValues']
+    export_df['Completed'] = True
+
+    # Save the DataFrame to a csv file
+    export_df.to_csv('MANC_Data\\2023_06_06_completeness_1.0_final.csv', index=False)
 
     new_df['Excitatory'] = np.where(cond1, -1, np.where(cond2, 1, np.nan))
 
@@ -119,16 +133,12 @@ def process_neuron_data(traced_df, total_conn_df):
     status_df = new_df[['Presynaptic_ID', 'status']].drop_duplicates()
 
     # Convert 'status' from 'SOLVED'/'UNSOLVED' to True/False
-    status_df['status'] = status_df['status'].map({'SOLVED': True, 'UNSOLVED': False})
+    status_df['status'] = status_df['status'].map({'SOLVED': True, 'UNSOLVED': True})
 
     # Rename 'status' column to 'completed'
     status_df.rename(columns={'status': 'Completed'}, inplace=True)
 
-    # Save the status DataFrame to csv file
-    status_df.columns = ['', 'Completed']
-    status_df.to_csv('MANC_Data\\2023_06_06_completeness_1.0_final.csv', index=False)
-
-
 def runAPIcall(auth):
     traced_df, total_conn_df = fetch_neuron_data(auth)
     process_neuron_data(traced_df, total_conn_df)
+

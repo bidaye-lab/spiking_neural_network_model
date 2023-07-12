@@ -1,0 +1,1521 @@
+<?xml version='1.0' encoding='utf-8'?>
+<gexf xmlns="http://www.gexf.net/1.2draft" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gexf.net/1.2draft http://www.gexf.net/1.2draft/gexf.xsd" version="1.2">
+  <meta lastmodifieddate="2023-07-12">
+    <creator>NetworkX 3.1</creator>
+  </meta>
+  <graph defaultedgetype="directed" mode="static" name="">
+    <attributes mode="static" class="node">
+      <attribute id="0" title="rate" type="float" />
+      <attribute id="1" title="named" type="boolean" />
+      <attribute id="2" title="hemisphere" type="string" />
+    </attributes>
+    <nodes>
+      <node id="152577" label="152577">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13314" label="13314">
+        <attvalues>
+          <attvalue for="0" value="41.13333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="26627" label="26627">
+        <attvalues>
+          <attvalue for="0" value="19.3" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10758" label="10758">
+        <attvalues>
+          <attvalue for="0" value="89.13333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13830" label="13830">
+        <attvalues>
+          <attvalue for="0" value="25.833333333333332" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13322" label="13322">
+        <attvalues>
+          <attvalue for="0" value="27.633333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12301" label="12301">
+        <attvalues>
+          <attvalue for="0" value="2.8275862068965516" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10254" label="10254">
+        <attvalues>
+          <attvalue for="0" value="5.6" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="155663" label="155663">
+        <attvalues>
+          <attvalue for="0" value="5.633333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10256" label="10256">
+        <attvalues>
+          <attvalue for="0" value="14.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10257" label="10257">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10258" label="10258">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="18449" label="18449">
+        <attvalues>
+          <attvalue for="0" value="1.2857142857142858" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10772" label="10772">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12820" label="12820">
+        <attvalues>
+          <attvalue for="0" value="9.033333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12311" label="12311">
+        <attvalues>
+          <attvalue for="0" value="2.4642857142857144" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17434" label="17434">
+        <attvalues>
+          <attvalue for="0" value="25.833333333333332" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11293" label="11293">
+        <attvalues>
+          <attvalue for="0" value="2.392857142857143" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12831" label="12831">
+        <attvalues>
+          <attvalue for="0" value="52.03333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10273" label="10273">
+        <attvalues>
+          <attvalue for="0" value="29.533333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="14371" label="14371">
+        <attvalues>
+          <attvalue for="0" value="17.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="front_l" label="front_l">
+        <attvalues>
+          <attvalue for="0" value="146.96666666666667" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="L" />
+        </attvalues>
+      </node>
+      <node id="20517" label="20517">
+        <attvalues>
+          <attvalue for="0" value="80.6" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10278" label="10278">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22051" label="22051">
+        <attvalues>
+          <attvalue for="0" value="1.2105263157894737" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="101414" label="101414">
+        <attvalues>
+          <attvalue for="0" value="1.0909090909090908" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="rear_l" label="rear_l">
+        <attvalues>
+          <attvalue for="0" value="143.6" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="L" />
+        </attvalues>
+      </node>
+      <node id="10283" label="10283">
+        <attvalues>
+          <attvalue for="0" value="49.233333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16429" label="16429">
+        <attvalues>
+          <attvalue for="0" value="1.608695652173913" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13358" label="13358">
+        <attvalues>
+          <attvalue for="0" value="1.5217391304347827" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10288" label="10288">
+        <attvalues>
+          <attvalue for="0" value="1.5217391304347827" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21552" label="21552">
+        <attvalues>
+          <attvalue for="0" value="1.4090909090909092" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11315" label="11315">
+        <attvalues>
+          <attvalue for="0" value="1.125" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11319" label="11319">
+        <attvalues>
+          <attvalue for="0" value="27.233333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="14904" label="14904">
+        <attvalues>
+          <attvalue for="0" value="25.033333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10809" label="10809">
+        <attvalues>
+          <attvalue for="0" value="18.866666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11834" label="11834">
+        <attvalues>
+          <attvalue for="0" value="15.466666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13370" label="13370">
+        <attvalues>
+          <attvalue for="0" value="38.233333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20536" label="20536">
+        <attvalues>
+          <attvalue for="0" value="61.63333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="25145" label="25145">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10306" label="10306">
+        <attvalues>
+          <attvalue for="0" value="4.0344827586206895" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12354" label="12354">
+        <attvalues>
+          <attvalue for="0" value="13.2" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10308" label="10308">
+        <attvalues>
+          <attvalue for="0" value="3.7" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12867" label="12867">
+        <attvalues>
+          <attvalue for="0" value="4.068965517241379" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10822" label="10822">
+        <attvalues>
+          <attvalue for="0" value="2.857142857142857" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17986" label="17986">
+        <attvalues>
+          <attvalue for="0" value="85.03333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23114" label="23114">
+        <attvalues>
+          <attvalue for="0" value="1.3" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="166986" label="166986">
+        <attvalues>
+          <attvalue for="0" value="18.066666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="172107" label="172107">
+        <attvalues>
+          <attvalue for="0" value="18.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11342" label="11342">
+        <attvalues>
+          <attvalue for="0" value="1.4" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="24659" label="24659">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10846" label="10846">
+        <attvalues>
+          <attvalue for="0" value="1.2222222222222223" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12389" label="12389">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11368" label="11368">
+        <attvalues>
+          <attvalue for="0" value="47.86666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11883" label="11883">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10348" label="10348">
+        <attvalues>
+          <attvalue for="0" value="195.96666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="rear_r" label="rear_r">
+        <attvalues>
+          <attvalue for="0" value="150.86666666666667" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="R" />
+        </attvalues>
+      </node>
+      <node id="10360" label="10360">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11897" label="11897">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10363" label="10363">
+        <attvalues>
+          <attvalue for="0" value="32.666666666666664" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21116" label="21116">
+        <attvalues>
+          <attvalue for="0" value="16.2" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10370" label="10370">
+        <attvalues>
+          <attvalue for="0" value="6.533333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16514" label="16514">
+        <attvalues>
+          <attvalue for="0" value="7.433333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12938" label="12938">
+        <attvalues>
+          <attvalue for="0" value="21.433333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10381" label="10381">
+        <attvalues>
+          <attvalue for="0" value="127.93333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13457" label="13457">
+        <attvalues>
+          <attvalue for="0" value="14.566666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11410" label="11410">
+        <attvalues>
+          <attvalue for="0" value="41.833333333333336" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12437" label="12437">
+        <attvalues>
+          <attvalue for="0" value="60.333333333333336" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10390" label="10390">
+        <attvalues>
+          <attvalue for="0" value="1.75" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21659" label="21659">
+        <attvalues>
+          <attvalue for="0" value="9.433333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11932" label="11932">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13982" label="13982">
+        <attvalues>
+          <attvalue for="0" value="47.6" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10400" label="10400">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12963" label="12963">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="27811" label="27811">
+        <attvalues>
+          <attvalue for="0" value="87.76666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11942" label="11942">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="19111" label="19111">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10411" label="10411">
+        <attvalues>
+          <attvalue for="0" value="4.068965517241379" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="18604" label="18604">
+        <attvalues>
+          <attvalue for="0" value="22.433333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="100524" label="100524">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16047" label="16047">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10419" label="10419">
+        <attvalues>
+          <attvalue for="0" value="126.9" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23733" label="23733">
+        <attvalues>
+          <attvalue for="0" value="2.1153846153846154" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10423" label="10423">
+        <attvalues>
+          <attvalue for="0" value="2.793103448275862" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="19640" label="19640">
+        <attvalues>
+          <attvalue for="0" value="1.0555555555555556" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11962" label="11962">
+        <attvalues>
+          <attvalue for="0" value="119.53333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22203" label="22203">
+        <attvalues>
+          <attvalue for="0" value="7.2" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20161" label="20161">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10435" label="10435">
+        <attvalues>
+          <attvalue for="0" value="31.033333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12996" label="12996">
+        <attvalues>
+          <attvalue for="0" value="121.03333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10441" label="10441">
+        <attvalues>
+          <attvalue for="0" value="193.6" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="mid_r" label="mid_r">
+        <attvalues>
+          <attvalue for="0" value="145.9" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="R" />
+        </attvalues>
+      </node>
+      <node id="24567" label="24567">
+        <attvalues>
+          <attvalue for="0" value="75.06666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13524" label="13524">
+        <attvalues>
+          <attvalue for="0" value="38.333333333333336" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10454" label="10454">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10456" label="10456">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="156376" label="156376">
+        <attvalues>
+          <attvalue for="0" value="52.766666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="24284" label="24284">
+        <attvalues>
+          <attvalue for="0" value="65.23333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13025" label="13025">
+        <attvalues>
+          <attvalue for="0" value="161.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="100584" label="100584">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13033" label="13033">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20201" label="20201">
+        <attvalues>
+          <attvalue for="0" value="91.43333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22250" label="22250">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23786" label="23786">
+        <attvalues>
+          <attvalue for="0" value="56.3" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10989" label="10989">
+        <attvalues>
+          <attvalue for="0" value="20.333333333333332" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21229" label="21229">
+        <attvalues>
+          <attvalue for="0" value="22.5" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="15604" label="15604">
+        <attvalues>
+          <attvalue for="0" value="27.733333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10485" label="10485">
+        <attvalues>
+          <attvalue for="0" value="1.3333333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10487" label="10487">
+        <attvalues>
+          <attvalue for="0" value="26.7" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12027" label="12027">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17660" label="17660">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10503" label="10503">
+        <attvalues>
+          <attvalue for="0" value="2.7241379310344827" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="153863" label="153863">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12041" label="12041">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21780" label="21780">
+        <attvalues>
+          <attvalue for="0" value="62.733333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10010" label="10010">
+        <attvalues>
+          <attvalue for="0" value="25.666666666666668" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="14106" label="14106">
+        <attvalues>
+          <attvalue for="0" value="13.166666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="mid_l" label="mid_l">
+        <attvalues>
+          <attvalue for="0" value="144.0" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="L" />
+        </attvalues>
+      </node>
+      <node id="10018" label="10018">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="26402" label="26402">
+        <attvalues>
+          <attvalue for="0" value="94.7" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13605" label="13605">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17703" label="17703">
+        <attvalues>
+          <attvalue for="0" value="34.266666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20775" label="20775">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="26920" label="26920">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="14122" label="14122">
+        <attvalues>
+          <attvalue for="0" value="161.46666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10031" label="10031">
+        <attvalues>
+          <attvalue for="0" value="4.1" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10545" label="10545">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20275" label="20275">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22835" label="22835">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13629" label="13629">
+        <attvalues>
+          <attvalue for="0" value="8.1" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10560" label="10560">
+        <attvalues>
+          <attvalue for="0" value="2.793103448275862" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="front_r" label="front_r">
+        <attvalues>
+          <attvalue for="0" value="149.23333333333332" />
+          <attvalue for="1" value="true" />
+          <attvalue for="2" value="R" />
+        </attvalues>
+      </node>
+      <node id="24388" label="24388">
+        <attvalues>
+          <attvalue for="0" value="1.1818181818181819" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="24392" label="24392">
+        <attvalues>
+          <attvalue for="0" value="21.366666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16714" label="16714">
+        <attvalues>
+          <attvalue for="0" value="15.166666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10574" label="10574">
+        <attvalues>
+          <attvalue for="0" value="4.0344827586206895" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10066" label="10066">
+        <attvalues>
+          <attvalue for="0" value="54.96666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16722" label="16722">
+        <attvalues>
+          <attvalue for="0" value="36.766666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11095" label="11095">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12120" label="12120">
+        <attvalues>
+          <attvalue for="0" value="94.63333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11609" label="11609">
+        <attvalues>
+          <attvalue for="0" value="3.033333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16217" label="16217">
+        <attvalues>
+          <attvalue for="0" value="2.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10587" label="10587">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="40793" label="40793">
+        <attvalues>
+          <attvalue for="0" value="1.3076923076923077" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10590" label="10590">
+        <attvalues>
+          <attvalue for="0" value="5.166666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17246" label="17246">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13664" label="13664">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10593" label="10593">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="152932" label="152932">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11774" label="11774">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10599" label="10599">
+        <attvalues>
+          <attvalue for="0" value="9.133333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12135" label="12135">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13672" label="13672">
+        <attvalues>
+          <attvalue for="0" value="26.433333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10603" label="10603">
+        <attvalues>
+          <attvalue for="0" value="76.33333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23918" label="23918">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10607" label="10607">
+        <attvalues>
+          <attvalue for="0" value="11.8" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12144" label="12144">
+        <attvalues>
+          <attvalue for="0" value="44.13333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10613" label="10613">
+        <attvalues>
+          <attvalue for="0" value="52.166666666666664" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13174" label="13174">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17269" label="17269">
+        <attvalues>
+          <attvalue for="0" value="10.2" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23415" label="23415">
+        <attvalues>
+          <attvalue for="0" value="92.93333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11129" label="11129">
+        <attvalues>
+          <attvalue for="0" value="26.766666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10618" label="10618">
+        <attvalues>
+          <attvalue for="0" value="29.8" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23930" label="23930">
+        <attvalues>
+          <attvalue for="0" value="85.86666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10108" label="10108">
+        <attvalues>
+          <attvalue for="0" value="21.233333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16252" label="16252">
+        <attvalues>
+          <attvalue for="0" value="26.933333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11653" label="11653">
+        <attvalues>
+          <attvalue for="0" value="33.2" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10133" label="10133">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11672" label="11672">
+        <attvalues>
+          <attvalue for="0" value="2.1923076923076925" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10650" label="10650">
+        <attvalues>
+          <attvalue for="0" value="96.46666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10651" label="10651">
+        <attvalues>
+          <attvalue for="0" value="3.392857142857143" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10142" label="10142">
+        <attvalues>
+          <attvalue for="0" value="66.43333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10657" label="10657">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10146" label="10146">
+        <attvalues>
+          <attvalue for="0" value="5.733333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="101794" label="101794">
+        <attvalues>
+          <attvalue for="0" value="27.333333333333332" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10150" label="10150">
+        <attvalues>
+          <attvalue for="0" value="2.793103448275862" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23463" label="23463">
+        <attvalues>
+          <attvalue for="0" value="17.233333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="23976" label="23976">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="101802" label="101802">
+        <attvalues>
+          <attvalue for="0" value="20.466666666666665" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12203" label="12203">
+        <attvalues>
+          <attvalue for="0" value="100.93333333333334" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10670" label="10670">
+        <attvalues>
+          <attvalue for="0" value="4.0344827586206895" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10159" label="10159">
+        <attvalues>
+          <attvalue for="0" value="54.13333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10169" label="10169">
+        <attvalues>
+          <attvalue for="0" value="4.0344827586206895" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22974" label="22974">
+        <attvalues>
+          <attvalue for="0" value="74.7" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10176" label="10176">
+        <attvalues>
+          <attvalue for="0" value="4.366666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10689" label="10689">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="24004" label="24004">
+        <attvalues>
+          <attvalue for="0" value="12.266666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10184" label="10184">
+        <attvalues>
+          <attvalue for="0" value="25.533333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12744" label="12744">
+        <attvalues>
+          <attvalue for="0" value="9.7" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="13256" label="13256">
+        <attvalues>
+          <attvalue for="0" value="20.166666666666668" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10188" label="10188">
+        <attvalues>
+          <attvalue for="0" value="27.033333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="15308" label="15308">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10191" label="10191">
+        <attvalues>
+          <attvalue for="0" value="26.533333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10703" label="10703">
+        <attvalues>
+          <attvalue for="0" value="23.266666666666666" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="20432" label="20432">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="21969" label="21969">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10195" label="10195">
+        <attvalues>
+          <attvalue for="0" value="6.466666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10196" label="10196">
+        <attvalues>
+          <attvalue for="0" value="55.4" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11732" label="11732">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="16855" label="16855">
+        <attvalues>
+          <attvalue for="0" value="27.4" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17880" label="17880">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12252" label="12252">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10207" label="10207">
+        <attvalues>
+          <attvalue for="0" value="24.366666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11231" label="11231">
+        <attvalues>
+          <attvalue for="0" value="28.533333333333335" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="17889" label="17889">
+        <attvalues>
+          <attvalue for="0" value="61.63333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="154596" label="154596">
+        <attvalues>
+          <attvalue for="0" value="1.3076923076923077" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10213" label="10213">
+        <attvalues>
+          <attvalue for="0" value="53.03333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12787" label="12787">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="22003" label="22003">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12791" label="12791">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="11768" label="11768">
+        <attvalues>
+          <attvalue for="0" value="1.0" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="15865" label="15865">
+        <attvalues>
+          <attvalue for="0" value="6.733333333333333" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="12283" label="12283">
+        <attvalues>
+          <attvalue for="0" value="6.266666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="10750" label="10750">
+        <attvalues>
+          <attvalue for="0" value="13.266666666666667" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+      <node id="154111" label="154111">
+        <attvalues>
+          <attvalue for="0" value="2.423076923076923" />
+          <attvalue for="1" value="false" />
+          <attvalue for="2" value="?" />
+        </attvalues>
+      </node>
+    </nodes>
+    <edges />
+  </graph>
+</gexf>
