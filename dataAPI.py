@@ -101,9 +101,6 @@ def process_neuron_data(traced_df, total_conn_df):
     new_df.rename(columns={'bodyId_pre': 'Presynaptic_ID', 'bodyId_post': 'Postsynaptic_ID', 'weight': 'Connectivity', 'weight_modified': 'Excitatory x Connectivity'}, inplace=True)
     new_df['Unnamed'] = new_df.index
 
-    new_df['Presynaptic_ID'] = new_df['Presynaptic_ID'].astype(str)
-    new_df['Postsynaptic_ID'] = new_df['Postsynaptic_ID'].astype(str)
-
     tempDF = pd.DataFrame()
     tempDF['TempValues'] = pd.concat([new_df['Presynaptic_ID'], new_df['Postsynaptic_ID']], ignore_index=True)
     tempDF.drop_duplicates(subset='TempValues', inplace=True)
