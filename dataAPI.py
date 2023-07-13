@@ -125,6 +125,10 @@ def process_neuron_data(traced_df, total_conn_df):
 
     # Rearrange columns according to the requirement
     new_df = new_df[['Unnamed', 'Presynaptic_ID', 'Postsynaptic_ID', 'Presynaptic_Index', 'Postsynaptic_Index', 'Connectivity', 'Excitatory', 'Excitatory x Connectivity', 'status']]
+    
+    #Re-define Presynaptic_ID and Postsynaptic_ID from DF Object Data type to int64
+    new_df['Presynaptic_ID'] = new_df['Presynaptic_ID'].astype('int64')
+    new_df['Postsynaptic_ID'] = new_df['Postsynaptic_ID'].astype('int64')
 
     # Save the dataframe to parquet and csv files
     new_df.to_parquet('MANC_Data\\2023_06_06_connectivity_1.0_final.parquet', compression='brotli', index = True)
