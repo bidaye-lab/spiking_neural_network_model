@@ -37,7 +37,7 @@ Watch the Anaconda terminal for possible warnings related to `brian2`.
 
 ### Generatsing Neuron Data
 
-There is an additional notebook attached to this repository called `MANC_data_crawler.ipynb`. Run the function inside after installing needed dependencies. You will need to provide your own authentication token from the Neuprint website. The script will generate two files `output.csv` and `output.parquet`. 
+There is an additional notebook attached to this repository called `MANC_data_crawler.ipynb`. Run the function inside after installing needed dependencies. You will need to provide your own authentication token from the Neuprint website. The script will generate two files `output.csv` and `output.parquet`. This data contains all neurons labelled `Traced` and `Unimportant` in the Janelia NeuPrint database. It ignores those labelled `PRT Orphan`, `RT Orphan`, `Anchor`, `Orphan`, `Assign`, and `None`.
 
 ### MANC vs. Flywire Data
 
