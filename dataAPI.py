@@ -33,7 +33,7 @@ def fetch_completeness_df(auth):
     })
 
     # Write the DataFrame to a CSV file
-    completeness_DF.to_csv('2023_06_06_completeness_1.0_final.csv', index=False)
+    completeness_DF.to_csv('MANC_Data\\2023_06_06_completeness_1.0_final.csv', index=False)
 
     return completeness_DF
 
@@ -169,14 +169,6 @@ def process_neuron_data(traced_df, total_conn_df):
 
     new_df['Presynaptic_Index'] = new_df['Presynaptic_ID'].map(mapping_dict)
     new_df['Postsynaptic_Index'] = new_df['Postsynaptic_ID'].map(mapping_dict)
-
-    # Create a new DataFrame with an empty column name for 'TempValues' and 'Completed' column filled with 'True'
-    export_df = pd.DataFrame()
-    export_df[''] = tempDF['TempValues']
-    export_df['Completed'] = True
-
-    # Save the DataFrame to a csv file
-    export_df.to_csv('MANC_Data\\2023_06_06_completeness_1.0_final.csv', index=False)
 
     new_df['Excitatory'] = np.where(cond1, -1, np.where(cond2, 1, np.nan))
 
