@@ -1,60 +1,120 @@
 import pandas as pd
 import numpy as np
 import time
-from neuprint import Client, fetch_traced_adjacencies
+from neuprint import Client, fetch_neurons, NeuronCriteria, queries
 #Pyarrow needs to be imported too
 
-def fetch_neuron_data(auth):
+def fetch_completeness_df(auth):
     """
-    Fetch neuron data from a specified neuprint server.
+    Fetches information about neurons from a NeuPrint server, filtering neurons based on their status, 
+    and creates a DataFrame indicating the 'completeness' of neurons.
 
+    Parameters:
+    auth (str): The authentication token for the NeuPrint server.
+
+    Returns:
+    pandas.DataFrame: A DataFrame with bodyId and a column indicating the completeness of the neuron.
+    """
+
+    # Set up the client with the provided auth token
+    client = Client('neuprint.janelia.org', 'manc:v1.0', token=auth)
+
+    # Define criteria for neurons - we only want those with status 'Traced' or 'Unimportant'
+    criteria = NeuronCriteria(status=['Traced', 'Unimportant'])
+
+    # Fetch the neurons that match the criteria from the NeuPrint server
+    singleNeurons, throwaway = fetch_neurons(criteria, client=client)
+
+    # Create a new DataFrame with the bodyIds of the fetched neurons and a 'completed' column, 
+    # which is filled with 'True' (indicating that these neurons are completed)
+    completeness_DF = pd.DataFrame({
+        '': singleNeurons['bodyId'],
+        'completed': [True] * len(singleNeurons)
+    })
+
+    # Write the DataFrame to a CSV file
+    completeness_DF.to_csv('2023_06_06_completeness_1.0_final.csv', index=False)
+
+    return completeness_DF
+
+def fetch_connectivity_df(auth):
+    """
+    Fetches connectivity data from a NeuPrint server, filtering neurons based on their status.
+
+    Parameters:
+    auth (str): The authentication token for the NeuPrint server.
+
+    Returns:
+    pandas.DataFrame: A DataFrame with the summed synaptic weights for each pair of neurons.
+    """
+
+    # Set up the client with the provided auth token
+    client = Client('neuprint.janelia.org', 'manc:v1.0', token=auth)
+
+    # Define criteria for source and target neurons - we only want those with status 'Traced' or 'Unimportant'
+    source_criteria = NeuronCriteria(status=['Traced', 'Unimportant'])
+    target_criteria = NeuronCriteria(status=['Traced', 'Unimportant'])
+
+    # Use fetch_adjacencies with the defined source and target criteria to fetch connectivity data
+    _, conn_df = queries.fetch_adjacencies(sources=source_criteria, targets=target_criteria, client=client)
+    
+    # Group the data by presynaptic and postsynaptic body IDs and sum the synaptic weights
+    # This gives us a total synaptic weight for each pair of neurons
+    summed_ROI_conn_df = conn_df.groupby(['bodyId_pre', 'bodyId_post'], as_index=False)['weight'].sum()
+
+    return summed_ROI_conn_df
+
+def addPredictedNT(auth, completeness_DF):
+    """
+    Appends predicted neurotransmitter (NT) data to an existing DataFrame.
+    
+    Parameters
+    ----------
+    auth : str
+        Authentication token for the NeuPrint client.
+    completeness_DF : pd.DataFrame
+        DataFrame containing initial neuron data. Assumes it contains a column with bodyId.
+        
     Returns
     -------
-    traced_df : DataFrame
-        The DataFrame that contains traced neuron adjacencies and additional neuron data.
-    total_conn_df : DataFrame
-        The DataFrame that contains the total connection weights between pairs of neurons.
-
-    Notes
-    -----
-    - The neuprint server requires a valid token for access.
-    - Fetching data from the server can take some time depending on the network connection and the server response.
-
-    Examples
-    --------
-    traced_df, total_conn_df = fetch_neuron_data()
+    newCompleteness_DF : pd.DataFrame
+        The updated DataFrame containing original data plus added predicted neurotransmitter data.
     """
+    # Establish a client connection to the NeuPrint database
+    client = Client('neuprint.janelia.org', 'manc:v1.0', token=auth)
+    
+    # Extract unique neuron body IDs from the existing DataFrame
+    unique_body_ids = completeness_DF[''].unique().tolist()
 
-    client = Client('neuprint.janelia.org', 'manc:v1.0',
-                    token=auth)
-    traced_df, roi_conn_df = fetch_traced_adjacencies('manc-traced-adjacencies-v1.0')
-
-    unique_body_ids = traced_df["bodyId"].unique().tolist()
+    # Prepare the list of unique body IDs for the query string
     body_id_list_str = ', '.join([str(id) for id in unique_body_ids])
 
+    # Construct a Cypher query to fetch predicted neurotransmitter data for each unique neuron
     q = f"""\
-        MATCH (n :Neuron)
-        WHERE n.bodyId IN [{body_id_list_str}]
-        RETURN n.bodyId AS bodyId,
-        n.predictedNt AS predicted_neurotransmitter, 
-        n.predictedNtProb AS predictedNTProb, 
-        n.ntUnknownProb AS ntUnknownProb, 
-        n.ntAcetylcholineProb AS AcetylcholineProb,
-        n.ntGabaProb AS GabaProb,
-        n.ntGlutamateProb AS GlutamateProb
-    """
+            MATCH (n :Neuron)
+            WHERE n.bodyId IN [{body_id_list_str}]
+            RETURN n.bodyId AS bodyId,
+            n.predictedNt AS predicted_neurotransmitter, 
+            n.predictedNtProb AS predictedNTProb, 
+            n.ntUnknownProb AS ntUnknownProb, 
+            n.ntAcetylcholineProb AS AcetylcholineProb,
+            n.ntGabaProb AS GabaProb,
+            n.ntGlutamateProb AS GlutamateProb
+        """
+    
+    # Track the time taken to execute the custom query
     start_time_fetch = time.time()
     neuron_df = client.fetch_custom(q)
     end_time_fetch = time.time()
     print(f"Time taken by client.fetch_custom: {end_time_fetch - start_time_fetch} seconds")
 
-    # Merge traced_df with neuron_df
-    traced_df = pd.merge(traced_df, neuron_df, on='bodyId')
+    # Rename the empty column header to 'bodyId'
+    completeness_DF.rename(columns={'': 'bodyId'}, inplace=True)
 
-    # Sum up over ROIs
-    total_conn_df = roi_conn_df.groupby(['bodyId_pre', 'bodyId_post'], as_index=False)['weight'].sum()
+    # Merge the existing DataFrame with the newly fetched neurotransmitter data
+    newCompleteness_DF = pd.merge(completeness_DF, neuron_df, on='bodyId')
 
-    return traced_df, total_conn_df
+    return newCompleteness_DF
 
 def process_neuron_data(traced_df, total_conn_df):
     """
@@ -140,6 +200,14 @@ def process_neuron_data(traced_df, total_conn_df):
     status_df.rename(columns={'status': 'Completed'}, inplace=True)
 
 def runAPIcall(auth):
-    traced_df, total_conn_df = fetch_neuron_data(auth)
-    process_neuron_data(traced_df, total_conn_df)
+    #Generate Completeness Data Frame and CSV file
+    completeness_DF = fetch_completeness_df(auth)
 
+    # Add Predicted Neurotransmitters to the Previous Completeness DF
+    newCompleteness_DF = addPredictedNT(auth, completeness_DF)
+
+    #Generate Connectivity Dataframe, Sorted by Region of Interest (RoI)
+    summed_ROI_conn_df = fetch_connectivity_df(auth)
+
+    # Process data to get Parquet File
+    process_neuron_data(newCompleteness_DF, summed_ROI_conn_df)
