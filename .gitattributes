@@ -1,4 +1,0 @@
-output.parquet filter=lfs diff=lfs merge=lfs -text
-*.parquet filter=lfs diff=lfs merge=lfs -text
-2023_03_23_connectivity_630_final.parquet filter=lfs diff=lfs merge=lfs -text
-2023_06_06_connectivity_1.0_final.parquet filter=lfs diff=lfs merge=lfs -text
