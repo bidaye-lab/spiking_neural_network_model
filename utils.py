@@ -25,8 +25,8 @@ def print_connectivity(config, neu1, neu2, name2flyid=dict()):
     df = pd.read_parquet(config['path_con'])
 
     ds = df.loc[ (df.loc[:, 'Presynaptic_ID'] == name2flyid.get(neu1, neu1)) & (df.loc[:, 'Postsynaptic_ID'] == name2flyid.get(neu2, neu2))]
-    c = ds.loc[:, 'Excitatory x Connectivity'].item()
-    
+    ec = ds.loc[:, 'Excitatory x Connectivity']
+    c = ec.item() if len(ec) else 0
     print(f'pre: {neu1} {name2flyid[neu1]} -> post: {neu2} {name2flyid[neu2]} = {c}')
 
 def csv2parquet(csv):
