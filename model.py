@@ -38,6 +38,7 @@ default_params = {
     # empirical 
     'w_syn'     : .275 * mV,              # weight per synapse (note: modulated by exponential decay)
     'r_poi'     : 150*Hz,                 # default rate of the Poisson input
+    'r_poi2'    :  10*Hz,                 # default rate of another Poisson input (useful for different frequencies)
     'f_poi'     : 250,                    # scaling factor for Poisson synapse
 
     # equations for neurons
@@ -295,6 +296,12 @@ def run_trial(df_inst, path_comp, path_con, params):
         if mode == 'stim':
             # add Poisson inputs to network
             poi_inp = stimulate(neu, ids, params)
+            net.add(*poi_inp)
+        elif mode == 'stim2':
+            # add Poisson inputs to network
+            params_tmp = params.copy()
+            params_tmp['r_poi'] = params_tmp['r_poi2']
+            poi_inp = stimulate(neu, ids, params_tmp)
             net.add(*poi_inp)
         elif mode == 'slnc':
             # silence neurons
