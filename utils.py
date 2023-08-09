@@ -287,14 +287,31 @@ def load_exps(l_prq):
         data for all experiments 'path_res'
     '''
     # cycle through all experiments
-    dfs = []
+    dfs, stim_ids = [], dict()
     for p in l_prq:
+
+        # ensure path object
+        p = Path(p)
+
         # load spike data from parquet file
         df = pd.read_parquet(p)
         df.loc[:, 't'] = df.loc[:, 't'].astype(float)
         dfs.append(df)
 
+        # load pickle for metadata
+        with open(p.with_suffix('.pickle'), 'rb') as f:
+            pkl = pickle.load(f)
+
+        # get stimulated neurons
+        df_inst = pkl['df_inst']
+        rows = df_inst.loc[:, 'mode'].str.startswith('stim')
+        ids = [ i for j in df_inst.loc[rows].loc[:, 'id'] for i in j]
+        stim_ids[pkl['exp_name']] = ids
+
+
     df = pd.concat(dfs)
+    # TODO: attrs is experimental, find another way https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.attrs.html#pandas.DataFrame.attrs
+    df.attrs['stim_ids'] = stim_ids
 
     return df
 
@@ -584,7 +601,7 @@ def plot_rate(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, name2fly
     if path:
         fig.savefig(path)
 
-def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, name2flyid=dict(), figsize=(), path=None):
+def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, exclude_stim=False, name2flyid=dict(), figsize=(), path=None):
     '''Plot rates for given experiments and neurons in a heatmap
 
     Parameters
@@ -603,6 +620,8 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
         number of trials to calculate the avg rate, by default 30
     do_score : bool, optional
         If True, zscore the firing rate for each neuron, by default False
+    exclude_stim : bool, optional
+        If True, replace stimulated neurons with nan, by default False
     name2flyid : dict, optional
         Mapping betwen custon neuron names and flywire IDs, by default dict()
     figsize : tuple, optional
@@ -637,6 +656,12 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
         df_exp = gr_exp.get_group(e)
         gr_neu = df_exp.groupby('flywire_id')
 
+        # stuff for excluding stim
+        # TODO: make more pretty
+        id_b = df_spkt.attrs['stim_ids'][e]
+        b2f = pd.Series(df_exp.loc[:, 'flywire_id'].values, index=df_exp.loc[:, 'brian_id']).to_dict()
+        id_f = [ b2f[i] for i in id_b ]
+
         Z = []
         for n in neu:
             idx = name2flyid.get(n, n)
@@ -653,6 +678,10 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
             z = z / n_trl * 1e3
             if do_zscore:
                 z = zscore(z, ddof=1)
+
+            if exclude_stim and idx in id_f:
+                z[:] = np.nan
+
             Z.append(z)
 
         Z = np.vstack(Z)
