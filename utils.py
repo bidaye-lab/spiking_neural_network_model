@@ -173,14 +173,15 @@ def check_ids(name2flyid, path_comp):
     ids_all = df_comp.index # all flywire ids
 
     warn = False
-    for k, v in name2flyid.items():
+    for k, v in name2flyid.copy().items():
         if not v in ids_all:
-            print('ERROR: ID {} for neuron {:>15} not found. Please provide correct flywire ID'.format(str(v), k))
+            print('ERROR: ID {} for neuron {:>15} not found. Please provide correct flywire ID. Removing neuron'.format(str(v), k))
+            name2flyid.pop(k)
             warn = True
     if not warn:
         print('INFO: IDs appear to match with {}'.format(path_comp))
     print()
-  
+
 
 def create_name_dict(path_name, path_comp, sheets_pair, sheets_single):
     '''Generate dictionary mapping custom neuron names to flywire IDs
