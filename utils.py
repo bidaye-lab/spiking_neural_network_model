@@ -601,7 +601,7 @@ def plot_rate(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, name2fly
     if path:
         fig.savefig(path)
 
-def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, exclude_stim=False, name2flyid=dict(), figsize=(), path=None):
+def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, exclude_stim=False, color_range=(None, None), name2flyid=dict(), figsize=(), path=None):
     '''Plot rates for given experiments and neurons in a heatmap
 
     Parameters
@@ -622,6 +622,8 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
         If True, zscore the firing rate for each neuron, by default False
     exclude_stim : bool, optional
         If True, replace stimulated neurons with nan, by default False
+    color_range : tuple, optional
+        Values for min and max for the color map, by default (None, None)
     name2flyid : dict, optional
         Mapping betwen custon neuron names and flywire IDs, by default dict()
     figsize : tuple, optional
@@ -687,7 +689,7 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
         Z = np.vstack(Z)
         x = bins[:-1]
         y = np.arange(n_neu)
-        im = ax.pcolormesh(x, y, Z, cmap=cmap,  norm=norm)
+        im = ax.pcolormesh(x, y, Z, cmap=cmap,  norm=norm, vmin=color_range[0], vmax=color_range[1])
         fig.colorbar(im, ax=ax, location='right', orientation='vertical')
 
         # TODO colorbar label and xlabel
