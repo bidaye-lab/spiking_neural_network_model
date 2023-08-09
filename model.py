@@ -108,6 +108,7 @@ def silence(slnc, syn):
 
     for i in slnc:
         syn.w[' {} == i'.format(i)] = 0*mV
+        syn.w[' {} == j'.format(i)] = 0*mV
     
 
 def create_model(path_comp, path_con, params):
