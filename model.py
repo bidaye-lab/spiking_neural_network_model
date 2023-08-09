@@ -56,7 +56,7 @@ default_params = {
 
 #######################
 # brian2 model setup
-def stimulate(neu, stim, params):
+def stimulate(neu, stim, params, r_poi_key='r_poi'):
     '''Create PoissonInput for neurons.
 
     For each neuron in 'names' a PoissonInput is generated and 
@@ -72,6 +72,8 @@ def stimulate(neu, stim, params):
         Frequency for the Poisson spikes, by default 'r_poi'
     params : dict
         Constants and equations that are used to construct the brian2 network model
+    r_poi_key : str
+        Name for the Poisson frequency in `params`, useful when using multiple frequencies
 
     Returns
     -------
@@ -85,7 +87,7 @@ def stimulate(neu, stim, params):
             target=neu[i], 
             target_var='v', 
             N=1, 
-            rate=params['r_poi'], 
+            rate=params[r_poi_key], 
             weight=params['w_syn']*params['f_poi']
             )
         neu[i].rfc = 0 * ms # no refractory period for Poisson targets
@@ -294,14 +296,12 @@ def run_trial(df_inst, path_comp, path_con, params):
     for i in df_inst.index:
         mode, ids, dt = df_inst.loc[i, ['mode', 'id', 'dt']]
         if mode == 'stim':
-            # add Poisson inputs to network
+            # add Poisson inputs to network (default frequency)
             poi_inp = stimulate(neu, ids, params)
             net.add(*poi_inp)
         elif mode == 'stim2':
-            # add Poisson inputs to network
-            params_tmp = params.copy()
-            params_tmp['r_poi'] = params_tmp['r_poi2']
-            poi_inp = stimulate(neu, ids, params_tmp)
+            # add Poisson inputs to network (alternative frequency)
+            poi_inp = stimulate(neu, ids, params, r_poi_key='r_poi2')
             net.add(*poi_inp)
         elif mode == 'slnc':
             # silence neurons
