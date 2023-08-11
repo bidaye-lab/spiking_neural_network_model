@@ -274,13 +274,15 @@ def useful_mappings(name2flyid, path_comp):
 
 ##########
 # analysis
-def load_exps(l_prq):
+def load_exps(l_prq, load_pickle=True):
     '''Load simulation results from disk
 
     Parameters
     ----------
     l_prq : list
         List of pickle files with simulation results
+    load_pickle : bool, optional
+        If True, load some metadata from pickle file, default True
 
     Returns
     -------
@@ -299,18 +301,21 @@ def load_exps(l_prq):
         df.loc[:, 't'] = df.loc[:, 't'].astype(float)
         dfs.append(df)
 
-        # load pickle for metadata
-        with open(p.with_suffix('.pickle'), 'rb') as f:
-            pkl = pickle.load(f)
 
-        # get stimulated neurons
-        df_inst = pkl['df_inst']
-        rows = df_inst.loc[:, 'mode'].str.startswith('stim')
-        ids = [ i for j in df_inst.loc[rows].loc[:, 'id'] for i in j]
-        stim_ids[pkl['exp_name']] = ids
+        if load_pickle:
+            # load pickle for metadata
+            with open(p.with_suffix('.pickle'), 'rb') as f:
+                pkl = pickle.load(f)
+
+            # get stimulated neurons
+            df_inst = pkl['df_inst']
+            rows = df_inst.loc[:, 'mode'].str.startswith('stim')
+            ids = [ i for j in df_inst.loc[rows].loc[:, 'id'] for i in j]
+            stim_ids[pkl['exp_name']] = ids
 
 
     df = pd.concat(dfs)
+
     # TODO: attrs is experimental, find another way https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.attrs.html#pandas.DataFrame.attrs
     df.attrs['stim_ids'] = stim_ids
 
@@ -736,7 +741,7 @@ def get_full_graph(p_comp, p_con):
     return G
 
 
-def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
+def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
     '''Select active neurons from G and write subgraph to disk
     File can be visualized with gephi software.
 
@@ -754,7 +759,9 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
         Resulting graph will include these neurons instead of all neurons
         that are active in a `p_prq` experiment.
         If custom names are supplied, name2flyid need to be passed as well.
-
+    dur : float
+        Duration of simulation, required to calculate rate
+        If 0, get duration from pickle file, which needs to be present
     '''
 
 
@@ -763,13 +770,14 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[]):
     p_gexf = p_prq.with_suffix('.gexf')
     p_gexf_cust = p_prq.parent / (p_prq.with_suffix('').name + '_cust.gexf')
 
-    # determine duration
-    with open(p_pkl, 'rb') as f:
-        df = pickle.load(f)['df_inst']
-    dur = df.loc[df.loc[:, 'mode'] == 'end'].loc[:, 't'].item()
+    if not dur:
+        # determine duration
+        with open(p_pkl, 'rb') as f:
+            df = pickle.load(f)['df_inst']
+        dur = df.loc[df.loc[:, 'mode'] == 'end'].loc[:, 't'].item()
 
     # load spike times/rate
-    df_spkt = load_exps([p_prq])
+    df_spkt = load_exps([p_prq], load_pickle=False)
     df_rate, _ = get_rate(df_spkt, duration=dur)
     ds = df_rate.iloc[:, 0]
 
