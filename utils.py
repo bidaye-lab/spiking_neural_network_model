@@ -321,7 +321,7 @@ def load_exps(l_prq, load_pickle=True):
 
     return df
 
-def get_rate(df, duration):
+def get_rate(df, duration, n_trl=30):
     '''Calculate rate and standard deviation for all experiments
     in df
 
@@ -331,6 +331,8 @@ def get_rate(df, duration):
         Dataframe generated with `load_exps` containing spike times
     duration : float
         Trial duration in seconds
+    n_trl : int, optional
+        Number of trials, by default 30
 
     Returns
     -------
@@ -345,10 +347,9 @@ def get_rate(df, duration):
     for e, df_e in df.groupby('exp_name'):
         for f, df_f in df_e.groupby('flywire_id'):
 
-            r = []
-            for _, df_t in df_f.groupby('trial'):
-                r.append(len(df_t) / duration)
-            r = np.array(r)
+            r = np.zeros(n_trl)
+            for t, df_t in df_f.groupby('trial'):
+                r[t] = len(df_t) / duration
 
             rate.append(r.mean())
             std.append(r.std())
