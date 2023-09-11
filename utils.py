@@ -741,9 +741,9 @@ def get_full_graph(p_comp, p_con):
     return G
 
 
-def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
+def write_graph(G, p_prq, name2flyid=dict(), neurons=[], suffix='gexf', dur=0):
     '''Select active neurons from G and write subgraph to disk
-    File can be visualized with gephi software.
+    File can be visualized with gephi software (gexf format) or cytoscape (gml format).
 
     Parameters
     ----------
@@ -759,7 +759,10 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
         Resulting graph will include these neurons instead of all neurons
         that are active in a `p_prq` experiment.
         If custom names are supplied, name2flyid need to be passed as well.
-    dur : float
+    suffix : str, optional
+        Determines the output file format, by default 'gexf'
+        Available formats: 'gexf', 'gml'
+    dur : float, optional
         Duration of simulation, required to calculate rate
         If 0, get duration from pickle file, which needs to be present
     '''
@@ -767,8 +770,8 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
 
     p_prq = Path(p_prq)
     p_pkl = p_prq.with_suffix('.pickle')
-    p_gexf = p_prq.with_suffix('.gexf')
-    p_gexf_cust = p_prq.parent / (p_prq.with_suffix('').name + '_cust.gexf')
+    p_graph = p_prq.with_suffix(f'.{suffix}')
+    p_graph_cust = p_prq.parent / (p_prq.with_suffix('').name + f'_cust.{suffix}')
 
     if not dur:
         # determine duration
@@ -783,10 +786,10 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
 
     if neurons:
         # select subgraph based on custom list
-        ids = [ name2flyid[i] for i in neurons ]
+        ids = [ name2flyid.get(i, i) for i in neurons ]
         G_sub = G.subgraph(ids).copy()
         nx.set_node_attributes(G_sub, 0.0, 'rate')
-        p_gexf = p_gexf_cust
+        p_graph = p_graph_cust
 
     else:
         # select subgraph with active neurons
@@ -821,6 +824,12 @@ def write_graph(G, p_prq, name2flyid=dict(), neurons=[], dur=0):
         d['weight'] = int(weight)
         d['sign'] = sign
 
-    print('INFO: writing graph file {}'.format(p_gexf))
-    nx.write_gexf(G_sub, p_gexf)
+    # save to disk
+    print('INFO: writing graph file {}'.format(p_graph))
+    if suffix == 'gexf':
+        nx.write_gexf(G_sub, p_graph)
+    elif suffix == 'gml':
+        nx.write_gml(G_sub, p_graph)
+    else:
+        raise NotImplementedError(f'Saving graph file format {suffix} is not implemented')
 
