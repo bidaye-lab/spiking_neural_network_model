@@ -1,5 +1,10 @@
 # Leaky-integrate-and-fire model based on Flywire connectome
 
+## Prerequisites
+The implementation of the model requires little programming knowledge.
+However, it is necessary to be familiar with [basic python data structures](https://neuropsychology.github.io/NeuroKit/resources/learn_python.html)
+as well as [pandas DataFrames](https://pandas.pydata.org/docs/user_guide/10min.html). 
+
 ## Installation
 ### Jupyter notebooks
 The workflow is designed for Jupyter notebooks.
