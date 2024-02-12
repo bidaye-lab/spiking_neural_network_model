@@ -12,6 +12,7 @@ sns.set_style('whitegrid')
 plt.rcParams['savefig.facecolor'] = 'w'
 
 import pickle
+import pathlib
 
 try:
     import networkx as nx
@@ -274,6 +275,12 @@ def useful_mappings(name2flyid, path_comp):
 
 ##########
 # analysis
+
+def load_dict(path):
+    'Load dictionary from disk'
+    with open(path, 'rb') as f:
+        return pickle.load(f)
+    
 def load_exps(l_prq, load_pickle=True):
     '''Load simulation results from disk
 
@@ -301,11 +308,25 @@ def load_exps(l_prq, load_pickle=True):
         df.loc[:, 't'] = df.loc[:, 't'].astype(float)
         dfs.append(df)
 
+        if load_pickle: # load pickle for metadata
+            
+            # workaround: legacy pickle files may have OS-dependent
+            # path objects, newer ones have strings
+            try:
+                posix_backup = pathlib.PosixPath
+                pkl = load_dict(p.with_suffix('.pickle'))
+            except NotImplementedError:
+                try:
+                    # currently on linux, created on windows
+                    pathlib.WindowsPath = pathlib.PosixPath
+                    pkl = load_dict(p.with_suffix('.pickle'))
+                except NotImplementedError:
+                    # currently on windows, created on linux
+                    pathlib.PosixPath = pathlib.WindowsPath
+                    pkl = load_dict(p.with_suffix('.pickle'))
+            finally:
+                pathlib.PosixPath = posix_backup
 
-        if load_pickle:
-            # load pickle for metadata
-            with open(p.with_suffix('.pickle'), 'rb') as f:
-                pkl = pickle.load(f)
 
             # get stimulated neurons
             df_inst = pkl['df_inst']
