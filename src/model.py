@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from utils import useful_mappings
+from src.utils import useful_mappings
 from textwrap import dedent
 
 # brian 2
@@ -409,9 +409,9 @@ def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_pa
         'name_flyid2i': name_flyid2i,
         'df_inst':      df_inst,
         'n_trl':        n_trl,
-        'path_res':     path_res,
-        'path_comp':    path_comp,
-        'path_con':     path_con,
+        'path_res':     str(path_res),
+        'path_comp':    str(path_comp),
+        'path_con':     str(path_con),
         'n_proc':       n_proc,
         'walltime':     walltime,
     }
