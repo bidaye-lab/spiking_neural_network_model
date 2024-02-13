@@ -14,8 +14,17 @@
 # ---
 
 # %%
-from src.model import run_exp
-import src.utils as utl
+# %load_ext autoreload
+# %autoreload 2
+
+from src import (
+    datahandler as dah,
+    model as mod,
+    graphs as gra,
+    visualize as vis,
+    analysis as ana,
+)
+
 
 # %% [markdown]
 # This workflow serves as an example of how to use the spiking neural network
@@ -28,6 +37,31 @@ import src.utils as utl
 #
 # # Loading the data
 #
+# ## Connectome data
+# To construct the spiking neural network model based on connectome data,
+# we use two data structures:
+# - `ds_ids: pd.Series`\
+#     A pandas Series with index increasing from 0...N and neuron IDs.
+#     The index is in the following refered to as the canonical ID, the values are the database IDs. Under the hood, `brian2` uses the canonical IDs to refer to neurons.
+# - `df_con: pd.DataFrame`\
+#     A pandas DataFrame with columns
+#     - `pre: int` canonical ID of presynnaptic neuron
+#     - `post: int` canonical ID of postsynaptic neuron
+#     - `w: int` synnapse number including sign (positive for excitatory, negative for inhibitory)
+#
+# To create the model for other connectomes, the data needs to be loaded into these data structures.
+
+# %%
+# set up environment
+path_comp = '../data/2023_03_23_completeness_630_final.csv'
+path_con = '../data/2023_03_23_connectivity_630_final.parquet'
+path_res = '../results/example/'
+
+# load flywire connectome
+ds_ids = dah.load_flywire_ids(path_comp)
+df_con = dah.load_flywire_connectivity(path_con, ds_ids)
+
+# %% [markdown]
 # ## Custom neuron names
 # Custom neuron names used in the lab can be edited in this 
 # [spread sheet in the OneDrive](https://maxplanckflorida-my.sharepoint.com/:x:/g/personal/murakamik_mpfi_org/EeX_NEJ2kaVMvcHdbHPZkPcBG9IwOMWwkEingWCFmnv_SA?e=azcslm).
@@ -40,24 +74,6 @@ import src.utils as utl
 # there is one flywire ID column. The name is used as is.
 #
 # Please make sure to follow the consenus in the lab about naming conventions when assigning names for neurons here.
-#
-# ## Using multiple CPUs
-# The computational load can be distributed over multiple CPU threads.
-# To choose the number of threads, set `n_procs` to a number not higher than available on your computer.
-# More threads will speed up the computation, but also increase memory usage.
-
-# %%
-# set up environment
-path_comp = '../data/2023_03_23_completeness_630_final.csv'
-path_con = '../data/2023_03_23_connectivity_630_final.parquet'
-path_res = '../results/example/'
-
-config = {
-    'path_comp'         : path_comp, 
-    'path_con'          : path_con, 
-    'path_res'          : path_res,     # store results here
-    'n_proc'            : 4,            # number of CPUs to use, -1 uses all available CPU
-}
 
 # %%
 # custon neuron names
@@ -76,7 +92,22 @@ sheets_single = [ # single neurons (one per row)
     # 'bitter', 
     ]
 
-name2flyid = utl.create_name_dict(path_name, path_comp, sheets_pair, sheets_single)
+name2id = dah.create_name_dict(path_name, ds_ids, sheets_pair, sheets_single)
+
+# %% [markdown]
+# # run experiments
+# ## Using custom neuron names
+# Having defined intuitive custom neuron names allows us to use these instead of the complicated database IDs to refer to neurons
+# in our simulations. Below, we collect some of the neurons we want to excite or silence, e.g., `l_p9 = ['P9_l', 'P9_r']`.
+#
+# If we use custom neuron names, we need to also pass the `name2id` dictionary to the `run_exp` function.
+#
+# ## Using multiple CPUs
+# The computational load can be distributed over multiple CPU threads.
+# To choose the number of threads, set `n_procs` to a number not higher than available on your computer.
+# More threads will speed up the computation, but also increase memory usage.
+#
+# We collect these settings in the `run_exp_kw_args` dictionary to pass them more concisely to the `run_exp` function.
 
 # %%
 # lists of neuron groups
@@ -84,8 +115,15 @@ l_p9 = ['P9_l', 'P9_r']
 l_bb = ['BB_r', 'BB_l']
 l_cdn = ['P9-cDN1_l', 'P9-cDN1_r']
 
-# %% [markdown]
-# # run experiments
+# settings to apply in all following simulations
+run_exp_kw_args = {
+    'ds_ids'  : ds_ids,       # neuron database IDs
+    'df_con'  : df_con,       # connectivity data
+    'path_res': path_res,     # store results here
+    'n_proc'  : 4,            # number of CPUs to use, -1 uses all available CPU
+    'name2id' : name2id,      # dictionary to map neuron names to ids
+    'force_overwrite': True   # if true, overwrite existing results   
+}
 
 # %%
 # P9 activation
@@ -94,7 +132,7 @@ instructions = [
     (1, 'end', [])
     ]
 
-run_exp(exp_name='P9', exp_inst=instructions, name2flyid=name2flyid, **config, force_overwrite=True)
+mod.run_exp(exp_name='P9', exp_inst=instructions, **run_exp_kw_args)
 
 # %%
 # more complex instuctions: 
@@ -112,7 +150,7 @@ instructions = [
     (0.75, 'slnc', l_bb),
     (1, 'end', []),
     ]
-run_exp(exp_name='P9+BB_slnc', exp_inst=instructions, name2flyid=name2flyid, **config, force_overwrite=True)
+mod.run_exp(exp_name='P9+BB_slnc', exp_inst=instructions, **run_exp_kw_args)
 
 # %%
 # changing model parameters
@@ -126,7 +164,7 @@ instructions = [
 
 params['r_poi'] = 250 * Hz
 
-run_exp(exp_name='P9_ultra', exp_inst=instructions, name2flyid=name2flyid, **config, params=params, force_overwrite=True)
+mod.run_exp(exp_name='P9_ultra', exp_inst=instructions, **run_exp_kw_args)
 
 # %%
 # use 2 different stimulation frequencies
@@ -138,7 +176,7 @@ instructions = [
     (1, 'end', []),
     ]
 
-run_exp(exp_name='P9+BB2', exp_inst=instructions, name2flyid=name2flyid, **config, force_overwrite=True)
+mod.run_exp(exp_name='P9+BB2', exp_inst=instructions, **run_exp_kw_args)
 
 # %% [markdown]
 # # Process results
@@ -157,25 +195,25 @@ outputs = [
 ]
 
 # load spike times, calculate rate + standard deviation
-df_spkt = utl.load_exps(outputs)
-df_rate, df_std = utl.get_rate(df_spkt, duration=1)
+df_spkt = ana.load_exps(outputs)
+df_rate, df_std = ana.get_rate(df_spkt, duration=1)
 
 # convert IDs to custom names, if possible
-df_rate = utl.rename_index(df_rate, name2flyid)
-df_std = utl.rename_index(df_std, name2flyid)
+df_rate = ana.rename_index(df_rate, name2id)
+df_std = ana.rename_index(df_std, name2id)
 
 # save as spreadsheets
-utl.save_xls(df_rate, '../results/example/rate.xlsx')
-utl.save_xls(df_std, '../results/example/rate_std.xlsx')
+ana.save_xls(df_rate, '../results/example/rate.xlsx')
+ana.save_xls(df_std, '../results/example/rate_std.xlsx')
 
 # %%
 # raster plots
 neu = l_p9 + l_bb + l_cdn
-utl.plot_raster(df_spkt, neu, name2flyid=name2flyid, xlims=(0, 1))
+vis.plot_raster(df_spkt, neu, name2id=name2id, xlims=(0, 1))
 
 # %%
 # firing rates
-utl.plot_rate(df_spkt, neu, xlims=(0, 1), name2flyid=name2flyid)
+vis.plot_rate(df_spkt, neu, name2id=name2id, xlims=(0, 1))
 
 # %%
 # select top 20 neurons
@@ -184,7 +222,7 @@ top20
 
 # %%
 # plot heatmap
-utl.plot_rate_heatmap(df_spkt, top20.index, xlims=(0, 1), name2flyid=name2flyid, do_zscore=False)
+vis.plot_rate_heatmap(df_spkt, top20.index, xlims=(0, 1), name2id=name2id, do_zscore=False)
 
 # %% [markdown]
 # # Graph representation
@@ -199,10 +237,10 @@ utl.plot_rate_heatmap(df_spkt, top20.index, xlims=(0, 1), name2flyid=name2flyid,
 
 # %%
 # load connectome into graph
-G = utl.get_full_graph(path_comp, path_con)
+G = gra.get_full_graph(ds_ids, df_con)
 print(len(G.nodes))
 
 # %%
 # select subgraph based on simulation results
 output = '../results/example/P9.parquet'
-utl.write_graph(G, output, name2flyid=name2flyid)
+gra.write_graph(G, output, name2id=name2id)
