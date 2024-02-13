@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.utils import useful_mappings
+from src.datahandler import useful_mappings
 from textwrap import dedent
 
 # brian 2
@@ -106,12 +106,12 @@ def silence(slnc, syn):
         Defined synapses object
     '''
 
-    for i in slnc:
-        syn.w[' {} == i'.format(i)] = 0*mV
-        syn.w[' {} == j'.format(i)] = 0*mV
+    for i_neu in slnc:
+        syn.w[' {} == i'.format(i_neu)] = 0*mV
+        syn.w[' {} == j'.format(i_neu)] = 0*mV
     
 
-def create_model(path_comp, path_con, params):
+def create_model(ds_ids, df_con, params):
     '''Create default network model.
 
     Convert the "completeness materialization" and "connectivity" dataframes
@@ -120,10 +120,10 @@ def create_model(path_comp, path_con, params):
 
     Parameters
     ----------
-    path_comp : str
-        path to "completeness materialization" dataframe
-    path_con : str
-        path to "connectivity" dataframe
+    ds_ids : pd.Series
+        Series of all database IDs
+    df_con : pd.DataFrame
+        Dataframe with connectivity information in canonical IDs
     params : dict
         Constants and equations that are used to construct the brian2 network model
 
@@ -131,19 +131,16 @@ def create_model(path_comp, path_con, params):
     Returns
     -------
     neu : NeuronGroup
-        brian2.NeuronGroup object with neurons as in 'path_comp'
+        brian2.NeuronGroup object with neurons as in `ds_ids`
     syn : Synapses
-        brian2.Synapses object with connections as in 'path_con'
+        brian2.Synapses object with connections as in `df_con`
     spk_mon : SpikeMonitor
         brian2.SpikeMonitor object, which records time of spike events
     '''
 
-    # load neuron connectivity dataframes
-    df_comp = pd.read_csv(path_comp, index_col=0)
-    df_con = pd.read_parquet(path_con)
-
-    neu = NeuronGroup( # create neurons
-        N=len(df_comp),
+    # create neurons
+    neu = NeuronGroup(
+        N=len(ds_ids),
         model=params['eqs'],
         method='linear',
         threshold=params['eq_th'],
@@ -160,12 +157,12 @@ def create_model(path_comp, path_con, params):
     syn = Synapses(neu, neu, 'w : volt', on_pre='x += w', delay=params['t_dly'], name='default_synapses')
 
     # connect synapses
-    i_pre = df_con.loc[:, 'Presynaptic_Index'].values
-    i_post = df_con.loc[:, 'Postsynaptic_Index'].values
+    i_pre = df_con.loc[:, 'pre'].values
+    i_post = df_con.loc[:, 'post'].values
     syn.connect(i=i_pre, j=i_post)
 
     # define connection weight
-    syn.w = df_con.loc[:,'Excitatory x Connectivity'].values * params['w_syn']
+    syn.w = df_con.loc[:,'w'].values * params['w_syn']
 
     # object to record spikes
     spk_mon = SpikeMonitor(neu) 
@@ -196,7 +193,7 @@ def get_spk_trn(spk_mon):
     
     return spk_trn
 
-def get_res_df(res, exp_name, i2flyid):
+def get_res_df(res, exp_name, i2id):
     '''Take spike time dict and colltect spikes in pandas dataframe
 
     Parameters
@@ -205,8 +202,8 @@ def get_res_df(res, exp_name, i2flyid):
         List with spike time dicts for each trial
     exp_name : str
         Name of the experiment
-    i2flyid : dict
-        Mapping between Brian IDs and flywire IDs
+    i2id : dict
+        Mapping between Brian IDs and database IDs
 
     Returns
     -------
@@ -228,7 +225,7 @@ def get_res_df(res, exp_name, i2flyid):
         'brian_id': ids,
     }
     df = pd.DataFrame(d)
-    df.loc[:, 'flywire_id'] = df.loc[:, 'brian_id'].map(i2flyid)
+    df.loc[:, 'database_id'] = df.loc[:, 'brian_id'].map(i2id)
     df.loc[:, 'exp_name'] = exp_name
 
     return df
@@ -268,17 +265,17 @@ def get_df_inst(l_inst, name2i):
     return df
 
 
-def run_trial(df_inst, path_comp, path_con, params):
+def run_trial(df_inst, ds_ids, df_con, params):
     '''Run single trial of simulation
 
     Parameters
     ----------
     df_inst : pd.DataFrame
         Instructions for the simulation
-    path_comp: Path 
-        path to "completeness materialization" dataframe
-    path_con: Path
-        path to "connectivity" dataframe
+    ds_ids: pd.Series 
+        Series of all database IDs
+    df_con: pd.DataFrame
+        Dataframe with connectivity information in canonical IDs
     params : dict
         Constants and equations that are used to construct the brian2 network model
 
@@ -291,7 +288,7 @@ def run_trial(df_inst, path_comp, path_con, params):
 
 
     # get default network
-    neu, syn, spk_mon = create_model(path_comp, path_con, params)
+    neu, syn, spk_mon = create_model(ds_ids, df_con, params)
     net = Network(neu, syn, spk_mon)
 
     for i in df_inst.index:
@@ -321,7 +318,7 @@ def run_trial(df_inst, path_comp, path_con, params):
     return spk_trn
 
 
-def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_params, name2flyid=dict(), n_trl=30, force_overwrite=False, n_proc=-1,):
+def run_exp(exp_name, exp_inst, path_res, ds_ids, df_con, params=default_params, name2id=dict(), n_trl=30, force_overwrite=False, n_proc=-1,):
     '''
     Run default network experiment with PoissonInputs as external input.
     Neurons chosen as Poisson sources spike with a default rate of 150 Hz
@@ -335,14 +332,14 @@ def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_pa
             Instructions what to do with which neurons when (see tutorial)
         path_res: str
             path to the output folder where spike data is stored
-        path_comp: str 
-            path to "completeness materialization" dataframe
-        path_con: str
-            path to "connectivity" dataframe
+        ds_ids: pd.Series 
+            Series of all database IDs
+        df_con: pd.DataFrame
+            Dataframe with connectivity information in canonical IDs
         params : dict
             Constants and equations that are used to construct the brian2 network model
-        name2flyid : dict
-            Mapping between custom neuron names and flywire IDs
+        name2id : dict
+            Mapping between custom neuron names and database IDs
         n_trl : int, optional
             Number of trials, by default 30
         force_overwrite : bool, optional
@@ -353,7 +350,7 @@ def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_pa
             n_proc=1 is equivalent serial code
     '''
     # convert to Path objects
-    path_res, path_comp, path_con = [ Path(i) for i in [path_res, path_comp, path_con] ]
+    path_res = Path(path_res)
     path_res.mkdir(parents=True, exist_ok=True)
 
     # define output files
@@ -369,10 +366,10 @@ def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_pa
             return
 
     # load name/id mappings
-    _, _, i2flyid, _, _, name_flyid2i = useful_mappings(name2flyid, path_comp)
+    _, _, i2id, _, _, name_id2i = useful_mappings(name2id, ds_ids)
 
     # generate instructions
-    df_inst = get_df_inst(exp_inst, name2i=name_flyid2i)
+    df_inst = get_df_inst(exp_inst, name2i=name_id2i)
 
     # print info
     print('>>> Experiment:     {}'.format(exp_name))
@@ -390,30 +387,28 @@ def run_exp(exp_name, exp_inst, path_res, path_comp, path_con, params=default_pa
     with parallel_backend('loky', n_jobs=n_proc):
         res = Parallel()(
             delayed(
-                run_trial)(df_inst, path_comp, path_con, params) for _ in range(n_trl))
+                run_trial)(df_inst, ds_ids, df_con, params) for _ in range(n_trl))
 
     # print simulation time
     walltime = time() - start 
     print('    Elapsed time:   {} s'.format(int(walltime)))
 
     # dataframe with spike times
-    df_res = get_res_df(res, exp_name, i2flyid)
+    df_res = get_res_df(res, exp_name, i2id)
 
     # store spike data 
     df_res.to_parquet(out_prq, compression='brotli')
 
     # store experiment metadata
     data = {
-        'exp_name':     exp_name,
-        'name2flyid':   name2flyid,
-        'name_flyid2i': name_flyid2i,
-        'df_inst':      df_inst,
-        'n_trl':        n_trl,
-        'path_res':     str(path_res),
-        'path_comp':    str(path_comp),
-        'path_con':     str(path_con),
-        'n_proc':       n_proc,
-        'walltime':     walltime,
+        'exp_name':   exp_name,
+        'name2id':   name2id,
+        'name_id2i': name_id2i,
+        'df_inst':   df_inst,
+        'n_trl':     n_trl,
+        'path_res':  str(path_res),
+        'n_proc':    n_proc,
+        'walltime':  walltime,
     }
     with open(out_pkl, 'wb') as f:
         pickle.dump(data, f)
