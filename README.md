@@ -30,9 +30,10 @@ conda activate spiking_neural_network_model
 # install project code as local local python module
 pip install -e .
 
-# convert scripts to notebooks
-jupytext --sync scripts/*.py
+# create notebooks
+python src/create_notebooks.py
 ```
+
 ## Windows only
 To significantly speed up the simulations, install the the following through the _Individual components_ tab in the [Visual Studio Installer](https://visualstudio.microsoft.com/visual-cpp-build-tools/):
 - `MSVC v143 VS2022 C++ x64/x86 built tools` (or latest version)
@@ -40,3 +41,14 @@ To significantly speed up the simulations, install the the following through the
 
 See
 [official Brian2 documentation](https://brian2.readthedocs.io/en/stable/introduction/install.html#requirements-for-c-code-generation) on "Requirements for C++ code generation" for more details.
+
+## Update code
+```bash
+# pull from github
+cd spiking_neural_network_model
+git pull origin main
+
+# recreate notebooks
+conda activate spiking_neural_network_model
+python src/create_notebooks.py
+```
