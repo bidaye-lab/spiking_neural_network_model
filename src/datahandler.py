@@ -20,7 +20,7 @@ def load_flywire_ids(path_comp):
         If database IDs are not unique
     '''
     
-    ds = pd.read_csv(path_comp).loc[:, 'Unnamed: 0']
+    ds = pd.read_csv(Path(path_comp)).loc[:, 'Unnamed: 0']
     if not ds.is_unique:
         raise ValueError(f'Database IDs in {path_comp} are not unique')
 
@@ -43,7 +43,7 @@ def load_flywire_connectivity(path_con, ds_ids):
     '''
 
     df = pd.read_parquet(
-        path_con,
+        Path(path_con),
         columns=["Presynaptic_ID", "Postsynaptic_ID", "Excitatory x Connectivity"],
     )
     df.columns = ["pre", "post", "w"]
@@ -122,7 +122,7 @@ def load_xls(path_names, sheets_pair, sheets_single):
     # sheets with left/right pairs (name | ID left | ID right)
     if sheets_pair:
         d_pair = pd.read_excel( 
-            path_names,
+            Path(path_names),
             sheet_name=sheets_pair,
             dtype={'ID_left': str, 'ID_right': str}
             )
@@ -134,7 +134,7 @@ def load_xls(path_names, sheets_pair, sheets_single):
     # sheets with single neurons (name | ID)
     if sheets_single:
         d_single = pd.read_excel( 
-            path_names,
+            Path(path_names),
             sheet_name=sheets_single,
             dtype={'ID': str}
             )
