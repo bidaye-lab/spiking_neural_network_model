@@ -6,7 +6,7 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.11.2
+#       jupytext_version: 1.16.1
 #   kernelspec:
 #     display_name: brian2
 #     language: python
@@ -33,7 +33,7 @@ from src import (
 # It is helpful to be familiar with
 # [basic python data structures](https://neuropsychology.github.io/NeuroKit/resources/learn_python.html)
 # as well as
-# [pandas DataFrames](https://pandas.pydata.org/docs/user_guide/10min.html). 
+# [pandas DataFrames](https://pandas.pydata.org/docs/user_guide/10min.html).
 #
 # # Loading the data
 #
@@ -53,9 +53,9 @@ from src import (
 
 # %%
 # set up environment
-path_comp = '../data/2023_03_23_completeness_630_final.csv'
-path_con = '../data/2023_03_23_connectivity_630_final.parquet'
-path_res = '../results/example/'
+path_comp = "../data/2023_03_23_completeness_630_final.csv"
+path_con = "../data/2023_03_23_connectivity_630_final.parquet"
+path_res = "../results/example/"
 
 # load flywire connectome
 ds_ids = dah.load_flywire_ids(path_comp)
@@ -63,34 +63,34 @@ df_con = dah.load_flywire_connectivity(path_con, ds_ids)
 
 # %% [markdown]
 # ## Custom neuron names
-# Custom neuron names used in the lab can be edited in this 
+# Custom neuron names used in the lab can be edited in this
 # [spread sheet in the OneDrive](https://maxplanckflorida-my.sharepoint.com/:x:/g/personal/murakamik_mpfi_org/EeX_NEJ2kaVMvcHdbHPZkPcBG9IwOMWwkEingWCFmnv_SA?e=azcslm).
 # The shared document is intended as the reference for the entire lab.
 # The file `flywire_ids_630.xlsx` in this git repository may be outdated.
 #
 # There are two types of spread sheets:
 # - pairs: If the sister neurons are known, flywire IDs for each of them is entered in a separate column. The suffixes `_r` and `_l` will be automatically appended to the neuron names.
-# - single: If the sister neuron is not known, 
+# - single: If the sister neuron is not known,
 # there is one flywire ID column. The name is used as is.
 #
 # Please make sure to follow the consenus in the lab about naming conventions when assigning names for neurons here.
 
 # %%
 # custon neuron names
-path_name = '../data/flywire_ids_630.xlsx'
+path_name = "../data/flywire_ids_630.xlsx"
 
 # sheet names of the xls file to include
-sheets_pair = [ # pair of neurons (left+right per row)
-    'stop',
-    'walk',
-    'walk_outputs',
-    ]
+sheets_pair = [  # pair of neurons (left+right per row)
+    "stop",
+    "walk",
+    "walk_outputs",
+]
 
-sheets_single = [ # single neurons (one per row)
-    # 'sugar', 
-    # 'ovidn', 
-    # 'bitter', 
-    ]
+sheets_single = [  # single neurons (one per row)
+    # 'sugar',
+    # 'ovidn',
+    # 'bitter',
+]
 
 name2id = dah.create_name_dict(path_name, ds_ids, sheets_pair, sheets_single)
 
@@ -111,72 +111,66 @@ name2id = dah.create_name_dict(path_name, ds_ids, sheets_pair, sheets_single)
 
 # %%
 # lists of neuron groups
-l_p9 = ['P9_l', 'P9_r']
-l_bb = ['BB_r', 'BB_l']
-l_cdn = ['P9-cDN1_l', 'P9-cDN1_r']
+l_p9 = ["P9_l", "P9_r"]
+l_bb = ["BB_r", "BB_l"]
+l_cdn = ["P9-cDN1_l", "P9-cDN1_r"]
 
 # settings to apply in all following simulations
 run_exp_kw_args = {
-    'ds_ids'  : ds_ids,       # neuron database IDs
-    'df_con'  : df_con,       # connectivity data
-    'path_res': path_res,     # store results here
-    'n_proc'  : 4,            # number of CPUs to use, -1 uses all available CPU
-    'name2id' : name2id,      # dictionary to map neuron names to ids
-    'force_overwrite': True   # if true, overwrite existing results   
+    "ds_ids": ds_ids,  # neuron database IDs
+    "df_con": df_con,  # connectivity data
+    "path_res": path_res,  # store results here
+    "n_proc": 4,  # number of CPUs to use, -1 uses all available CPU
+    "name2id": name2id,  # dictionary to map neuron names to ids
+    "force_overwrite": True,  # if true, overwrite existing results
 }
 
 # %%
 # P9 activation
-instructions = [ 
-    (0, 'stim', l_p9), 
-    (1, 'end', [])
-    ]
+instructions = [(0, "stim", l_p9), (1, "end", [])]
 
-mod.run_exp(exp_name='P9', exp_inst=instructions, **run_exp_kw_args)
+mod.run_exp(exp_name="P9", exp_inst=instructions, **run_exp_kw_args)
 
 # %%
-# more complex instuctions: 
-# (i) activate P9 
-# (ii) after some delay, activate BB 
+# more complex instuctions:
+# (i) activate P9
+# (ii) after some delay, activate BB
 # (iii) after some more delay, silence BB
 
 # caveate
 # - silenced neurons cannot be unsilenced
 # - silenced neurons will still spike, if they also have a Poisson input (stim)
 
-instructions = [ 
-    (0, 'stim', l_p9), 
-    (0.25, 'stim', l_bb),
-    (0.75, 'slnc', l_bb),
-    (1, 'end', []),
-    ]
-mod.run_exp(exp_name='P9+BB_slnc', exp_inst=instructions, **run_exp_kw_args)
+instructions = [
+    (0, "stim", l_p9),
+    (0.25, "stim", l_bb),
+    (0.75, "slnc", l_bb),
+    (1, "end", []),
+]
+mod.run_exp(exp_name="P9+BB_slnc", exp_inst=instructions, **run_exp_kw_args)
 
 # %%
 # changing model parameters
 from src.model import default_params as params
 from brian2 import Hz
 
-instructions = [ 
-    (0, 'stim', l_p9), 
-    (1, 'end', [])
-    ]
+instructions = [(0, "stim", l_p9), (1, "end", [])]
 
-params['r_poi'] = 250 * Hz
+params["r_poi"] = 250 * Hz
 
-mod.run_exp(exp_name='P9_ultra', exp_inst=instructions, **run_exp_kw_args)
+mod.run_exp(exp_name="P9_ultra", exp_inst=instructions, **run_exp_kw_args)
 
 # %%
 # use 2 different stimulation frequencies
 # frequency for stim2 is controlled via params['r_poi2']
 
-instructions = [ 
-    (0, 'stim', l_p9), 
-    (0, 'stim2', l_bb),
-    (1, 'end', []),
-    ]
+instructions = [
+    (0, "stim", l_p9),
+    (0, "stim2", l_bb),
+    (1, "end", []),
+]
 
-mod.run_exp(exp_name='P9+BB2', exp_inst=instructions, **run_exp_kw_args)
+mod.run_exp(exp_name="P9+BB2", exp_inst=instructions, **run_exp_kw_args)
 
 # %% [markdown]
 # # Process results
@@ -185,13 +179,13 @@ mod.run_exp(exp_name='P9+BB2', exp_inst=instructions, **run_exp_kw_args)
 # Below, we show how to
 # - save the average rate across trials and standard deviation
 # - create spike raster plots
-# - plot line plots and heat maps with firing rate changes throughout the simulation 
+# - plot line plots and heat maps with firing rate changes throughout the simulation
 
 # %%
 # choose experiments to load
 outputs = [
-    '../results/example/P9+BB_slnc.parquet',
-    '../results/example/P9.parquet',
+    "../results/example/P9+BB_slnc.parquet",
+    "../results/example/P9.parquet",
 ]
 
 # load spike times, calculate rate + standard deviation
@@ -203,8 +197,11 @@ df_rate = ana.rename_index(df_rate, name2id)
 df_std = ana.rename_index(df_std, name2id)
 
 # save as spreadsheets
-ana.save_xls(df_rate, '../results/example/rate.xlsx')
-ana.save_xls(df_std, '../results/example/rate_std.xlsx')
+ana.save_xls(df_rate, "../results/example/rate.xlsx")
+ana.save_xls(df_std, "../results/example/rate_std.xlsx")
+
+# %% [markdown]
+# ## Plots using spike times in `df_spkt`
 
 # %%
 # raster plots
@@ -217,12 +214,35 @@ vis.plot_rate(df_spkt, neu, name2id=name2id, xlims=(0, 1))
 
 # %%
 # select top 20 neurons
-top20 = df_rate.sort_values(by='P9', ascending=False).head(20)
+top20 = df_rate.sort_values(by="P9", ascending=False).head(20)
 top20
 
 # %%
 # plot heatmap
-vis.plot_rate_heatmap(df_spkt, top20.index, xlims=(0, 1), name2id=name2id, do_zscore=False)
+vis.plot_rate_heatmap(
+    df_spkt, top20.index, xlims=(0, 1), name2id=name2id, do_zscore=False
+)
+
+# %% [markdown]
+# ## Plots using average firing rates in `df_rate`
+
+# %%
+# select only neurons with custom names
+named_neurons = df_rate.index.isin(name2id)
+df_rate_named = df_rate.loc[named_neurons]
+
+# plot firing rate matrix
+vis.firing_rate_matrix(df_rate_named)
+
+# %%
+# subtract P9 firing rate from all neurons
+df_change = df_rate.subtract(df_rate.loc[:, "P9"], axis=0)
+
+# ignore absolute changes in firing rate smaller than some threshold
+df_change = df_change[(df_change.abs() >= 5).any(axis=1)]
+
+# plot difference matrix
+vis.firing_rate_matrix(df_change, rate_change=True)
 
 # %% [markdown]
 # # Graph representation
@@ -242,5 +262,5 @@ print(len(G.nodes))
 
 # %%
 # select subgraph based on simulation results
-output = '../results/example/P9.parquet'
+output = "../results/example/P9.parquet"
 gra.write_graph(G, output, name2id=name2id)

@@ -290,3 +290,49 @@ def plot_rate_heatmap(df_spkt, neu, xlims, sigma=25, n_trl=30, do_zscore=False, 
 
     if path:
         fig.savefig(path)
+
+
+def firing_rate_matrix(df_rate, rate_change=False, scaling=.5, path=''):
+    '''Plot heatmap showing the firing rates of neurons in different experiments
+ 
+    Parameters
+    ----------
+    df_rate : pd.DataFrame
+        Rate data with experiments as columns and neurons as index
+    rate_change : bool, optional
+        If True, use diverging colormap and center on 0, by default False
+    scaling : float, optional
+        Scales figure size, by default .5
+    path : path-like, optional
+        Filename for saving the plot, by default ''
+    '''
+
+    # figure dimensions
+    n_neu, n_exp = df_rate.shape
+    figsize = (scaling*n_exp, scaling*n_neu)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.set_title('firing rate [Hz]')
+
+    
+    if rate_change: # plot settings for rate changes
+        heatmap_kw_args = {
+            'cmap': 'coolwarm',
+            'center': 0,
+        }
+    else: # plot settings for absolute rates
+        heatmap_kw_args = {
+            'cmap': 'viridis',
+        }
+
+    sns.heatmap(
+        ax=ax, data=df_rate, square=True,
+        xticklabels=True, yticklabels=True,
+        annot=True, fmt='.1f', annot_kws={'size': 'small'},
+        cbar=False, **heatmap_kw_args,
+    )
+    ax.tick_params(axis='x', labeltop=True, labelbottom=True, labelrotation=90)
+    
+    if path:
+        fig.savefig(path)
+        plt.close(fig)
