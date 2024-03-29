@@ -11,13 +11,12 @@ see this [template repo](https://github.com/bidaye-lab/template_data_pipelines).
 Details about how to use the model are given in the separate workflow scripts:
 |file|content|
 |---|---|
-|[example.py](scripts/example.py)|General usage|
+|[example.ipynb](notebooks/example.ipynb)|General usage|
 |[graph_for_cytoscape.ipynb](notebooks/old/graph_for_cytoscape.ipynb)| Visualizations for cytoscape|
 |[heatmap_2freq.ipynb](notebooks/old/heatmap_2freq.ipynb)| Custom 2D frequency comparison|
 
 
 # Installation
-
 ```
 # get source code
 git clone https://github.com/nspiller/spiking_neural_network_model 
@@ -29,9 +28,6 @@ conda activate spiking_neural_network_model
 
 # install project code as local local python module
 pip install -e .
-
-# create notebooks
-python src/create_notebooks.py
 ```
 
 ## Windows only
@@ -47,8 +43,4 @@ See
 # pull from github
 cd spiking_neural_network_model
 git pull origin main
-
-# recreate notebooks
-conda activate spiking_neural_network_model
-python src/create_notebooks.py
 ```
