@@ -1,0 +1,115 @@
+name: Sync between Jupyter notebooks and Python plain text files
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches:
+      - main
+
+jobs:
+  sync_notebooks:
+    runs-on: ubuntu-latest
+    env:
+      NOTEBOOK_FOLDER: notebooks
+      SCRIPT_FOLDER: notebooks/scripts
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+          fetch-depth: 0
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install Jupytext
+        run: |
+          pip install 'jupytext~=1.0'
+
+      - name: Update notebook or script
+        run: |
+          shopt -s nullglob
+
+          # Function to check which file was last modified
+          function check_last_modified {
+            notebook=$1
+            script=$2
+
+            # Get the hash of the last commit that modified each file
+            last_commit_notebook=$(git log -1 --format="%H" -- $notebook)
+            last_commit_script=$(git log -1 --format="%H" -- $script)
+
+            # if one of the files does not exist, return the other
+            if [ -z "$last_commit_notebook" ]; then
+              echo script
+
+            elif [ -z "$last_commit_script" ]; then
+              echo notebook
+
+            else
+
+              # compare commit hashes of files with last common commit hash
+              last_common_commit=$(git merge-base $last_commit_notebook $last_commit_script)
+
+              if [ "$last_commit_notebook" != "$last_common_commit" ]; then
+                echo notebook
+
+              elif [ "$last_commit_script" != "$last_common_commit" ]; then
+                echo script
+
+              else
+                echo both
+              fi
+            fi
+          }
+
+          # locations of notebooks and scripts folders
+          NOTEBOOK_FOLDER=${{ env.NOTEBOOK_FOLDER }}
+          SCRIPT_FOLDER=${{ env.SCRIPT_FOLDER }}
+          mkdir -p $NOTEBOOK_FOLDER $SCRIPT_FOLDER
+
+          # catch all .py and .ipynb files, so the sync works if
+          # (i) both files exist
+          # (ii) either of the two exist
+          for file in $NOTEBOOK_FOLDER/*.ipynb $SCRIPT_FOLDER/*.py; do
+
+            # construct names for file pair
+            base="${file##*/}"
+            base="${base%.py}"
+            base="${base%.ipynb}"
+            notebook=$NOTEBOOK_FOLDER/"$base.ipynb"
+            script=$SCRIPT_FOLDER/"$base.py"
+
+            # Check which file was last modified
+            last_modified=$(check_last_modified "$notebook" "$script")
+
+            # update or create the paired file
+            if [ "$last_modified" == "notebook" ]; then
+              echo "Notebook file $notebook is newest. Updating/creating script file."
+              jupytext --opt notebook_metadata_filter="-all" --opt cell_metadata_filter="-all" --to py:percent "$notebook" --output "$script"
+              git add "$script"
+            
+            elif [ "$last_modified" == "script" ]; then
+              echo "Notebook file $notebook is oldest. Updating/creating notebook file."
+              jupytext --update --to ipynb "$script" --output "$notebook"
+              git add "$notebook"
+
+            elif [ "$last_modified" == "both" ]; then
+              echo "Both $notebook and $script were last modified in same commit. Assuming they are in sync."
+              
+            fi
+          done
+
+          # Git setup
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          
+          # commit and push changes
+          git commit -m "Sync notebooks and script files" || echo "No changes to commit"
+          git push
