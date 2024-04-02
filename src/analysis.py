@@ -1,15 +1,10 @@
 
 import pathlib
 from pathlib import Path
-import pickle
 
 import pandas as pd
 import numpy as np
 
-def load_dict(path):
-    'Load dictionary from disk'
-    with open(path, 'rb') as f:
-        return pickle.load(f)
     
 def load_exps(l_prq, load_pickle=True):
     '''Load simulation results from disk
@@ -44,16 +39,16 @@ def load_exps(l_prq, load_pickle=True):
             # path objects, newer ones have strings
             try:
                 posix_backup = pathlib.PosixPath
-                pkl = load_dict(p.with_suffix('.pickle'))
+                pkl = pd.read_pickle(p.with_suffix('.pickle'))
             except NotImplementedError:
                 try:
                     # currently on linux, created on windows
                     pathlib.WindowsPath = pathlib.PosixPath
-                    pkl = load_dict(p.with_suffix('.pickle'))
+                    pkl = pd.read_pickle(p.with_suffix('.pickle'))
                 except NotImplementedError:
                     # currently on windows, created on linux
                     pathlib.PosixPath = pathlib.WindowsPath
-                    pkl = load_dict(p.with_suffix('.pickle'))
+                    pkl = pd.read_pickle(p.with_suffix('.pickle'))
             finally:
                 pathlib.PosixPath = posix_backup
 
